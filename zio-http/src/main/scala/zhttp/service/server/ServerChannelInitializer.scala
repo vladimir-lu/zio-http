@@ -68,11 +68,13 @@ final case class ServerChannelInitializer[R](
 
     // HttpContentCompressor
     // Add HttpContentCompressor if setting is true
-    if (cfg.httpCompression._2.nonEmpty)
+    if (cfg.httpCompression._2.nonEmpty) {
+      pipeline.addAfter("decoder", "HTTP_CONTENT_DECOMPRESSOR", new HttpContentDecompressor())
       pipeline.addLast(
         HTTP_CONTENT_COMPRESSOR,
         new HttpContentCompressor(cfg.httpCompression._1, cfg.httpCompression._2.map(_.toJava): _*),
       )
+    }
 
     // RequestHandler
     // Always add ZIO Http Request Handler
@@ -81,7 +83,7 @@ final case class ServerChannelInitializer[R](
     // ServerResponseHandler - transforms Response to HttpResponse
     pipeline.addLast(HTTP_RESPONSE_HANDLER, respHandler)
 
-    ()
+    println(pipeline.toMap.keySet())
   }
 
 }

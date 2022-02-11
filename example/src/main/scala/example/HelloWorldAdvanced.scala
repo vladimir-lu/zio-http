@@ -10,7 +10,7 @@ import scala.util.Try
 
 object HelloWorldAdvanced extends App {
   // Set a port
-  private val PORT = 0
+  private val PORT = 80
 
   private val fooBar: HttpApp[Any, Nothing] = Http.collect[Request] {
     case Method.GET -> !! / "foo" => Response.text("bar")
@@ -18,12 +18,17 @@ object HelloWorldAdvanced extends App {
   }
 
   private val app = Http.collectZIO[Request] {
-    case Method.GET -> !! / "random" => random.nextString(10).map(Response.text(_))
-    case Method.GET -> !! / "utc"    => clock.currentDateTime.map(s => Response.text(s.toString))
+    case Method.GET -> !! / "random"            => random.nextString(10).map(Response.text(_))
+    case Method.GET -> !! / "utc"               => clock.currentDateTime.map(s => Response.text(s.toString))
+    case req @ Method.GET -> !! / "compression" =>
+      req.bodyAsString.map { body =>
+        println(body)
+        Response.text(body)
+      }.orDie
   }
 
   private val server = Server.port(PORT) ++
-    Server.httpCompression(12, IndexedSeq(CompressionOptions.deflate(), CompressionOptions.gzip())) ++
+    Server.httpCompression(0, IndexedSeq(CompressionOptions.deflate(), CompressionOptions.gzip())) ++
     Server.app(fooBar ++ app)
 
   override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = {
