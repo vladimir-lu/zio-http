@@ -13,23 +13,12 @@ jobs:
 
   sample_job:
     name: Test job
-    if: ${{ github.event_name == 'push'}}
-      strategy:
-        matrix:
-          os: [ centos ]
-          scala: [ 2.13.8 ]
-          java: [ temurin@11 ]
-      runs-on: [ "${{ matrix.os }}", zio-http ]
+      runs-on: ubuntu-latest
 
       steps:
         - name: Clean up
           id: clean_up
-          env:
-            GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
 
-        - uses: actions/checkout@v2
-          with:
-            path: zio-http
 
   delete-artifacts:
     name: Delete Artifacts
