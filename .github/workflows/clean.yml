@@ -11,15 +11,6 @@ on: push
 
 jobs:
 
-  sample_job:
-    name: Test job
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Clean up
-        id: clean_up
-        run: echo "Hello Shruti"
-
   delete-artifacts:
     name: Delete Artifacts
     runs-on: ubuntu-latest
