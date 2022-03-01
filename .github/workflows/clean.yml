@@ -26,17 +26,10 @@ jobs:
           id: clean_up
           env:
             GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-          run: sudo rm -rf *
 
         - uses: actions/checkout@v2
           with:
             path: zio-http
-
-        - id: result
-          env:
-            GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-          run:
-            echo "Hello"
 
   delete-artifacts:
     name: Delete Artifacts
