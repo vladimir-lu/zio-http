@@ -1,0 +1,15 @@
+
+name: jmh-benchmarks
+
+on: push
+
+jobs:
+
+  jmh-benchmarks:
+    name: Jmh Benchmarks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clean up
+        id: clean_up
+        run: echo "Hello Shruti"
