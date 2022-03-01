@@ -10,6 +10,34 @@ name: Clean
 on: push
 
 jobs:
+
+  sample_job:
+    name: Test job
+    if: ${{ github.event_name == 'push'}}
+      strategy:
+        matrix:
+          os: [ centos ]
+          scala: [ 2.13.8 ]
+          java: [ temurin@11 ]
+      runs-on: [ "${{ matrix.os }}", zio-http ]
+
+      steps:
+        - name: Clean up
+          id: clean_up
+          env:
+            GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
+          run: sudo rm -rf *
+
+        - uses: actions/checkout@v2
+          with:
+            path: zio-http
+
+        - id: result
+          env:
+            GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
+          run:
+            echo "Hello"
+
   delete-artifacts:
     name: Delete Artifacts
     runs-on: ubuntu-latest
