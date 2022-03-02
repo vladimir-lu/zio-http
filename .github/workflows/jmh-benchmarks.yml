@@ -15,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Clean up
-        id: clean_up
-        run: sbt ++2.13.8 zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCollectEval
+      - name: Jmh Benchmarks
+        id: Jmh Benchmarks
+        run: sbt zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCollectEval
 
