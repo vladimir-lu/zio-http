@@ -16,12 +16,6 @@ object JmhBenchmarkWorkFlow {
       oses = List("centos"),
       scalas = List(Scala213),
       steps = List(
-        WorkflowStep.Run(
-          env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
-          id = Some("clean_up"),
-          name = Some("Clean up"),
-          commands = List("sudo rm -rf *"),
-        ),
         WorkflowStep.Use(
           UseRef.Public("actions", "setup-java", s"v2"),
           Map(
@@ -35,6 +29,7 @@ object JmhBenchmarkWorkFlow {
           name = Some("Add jmh plugin"),
         ),
         WorkflowStep.Run(
+          env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
           commands = List("cd zio-http", s"sbt zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 CookieDecodeBenchmark"),
           id = Some("jmh"),
           name = Some("jmh"),

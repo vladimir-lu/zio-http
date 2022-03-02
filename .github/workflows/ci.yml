@@ -287,12 +287,6 @@ jobs:
         java: [temurin@11]
     runs-on: [ "${{ matrix.os }}", zio-http ]
     steps:
-      - name: Clean up
-        id: clean_up
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: sudo rm -rf *
-
       - uses: actions/setup-java@v2
         with:
           distribution: temurin
@@ -306,6 +300,8 @@ jobs:
 
       - name: jmh
         id: jmh
+        env:
+          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
         run: |
           cd zio-http
           sbt zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 CookieDecodeBenchmark
