@@ -26,7 +26,7 @@ object JmhBenchmarkWorkflow {
           name = Some("Add jmh plugin"),
         ),
         WorkflowStep.Run(
-          commands = List("cd zio-http", s"sbt zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCollectEval"),
+          commands = List("cd zio-http", s"sbt zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 CookieDecodeBenchmark"),
           id = Some("jmh HttpCollectEval"),
           name = Some("jmh HttpCollectEval"),
         ),

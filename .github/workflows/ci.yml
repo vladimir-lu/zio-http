@@ -302,4 +302,4 @@ jobs:
         id: jmh HttpCollectEval
         run: |
           cd zio-http
-          sbt zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCollectEval
+          sbt zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 CookieDecodeBenchmark
