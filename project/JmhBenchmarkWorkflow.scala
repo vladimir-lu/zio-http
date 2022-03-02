@@ -13,6 +13,7 @@ object JmhBenchmarkWorkflow {
       oses = List("centos"),
       scalas = List(Scala213),
       steps = List(
+        WorkflowStep.CheckoutFull,
         WorkflowStep.Run(
           commands = List(s"sed -i -e '$$a${jmhPlugin}' project/plugins.sbt"),
           id = Some("add_plugin"),
