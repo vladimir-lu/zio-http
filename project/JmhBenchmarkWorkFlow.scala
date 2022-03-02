@@ -2,7 +2,7 @@ import BuildHelper.{JmhVersion, Scala213}
 import sbtghactions.GenerativePlugin.autoImport.{UseRef, WorkflowJob, WorkflowStep}
 
 
-object JmhBenchmarkWorkflow {
+object JmhBenchmarkWorkFlow {
 
 
   val jmhPlugin = s"""addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "${JmhVersion}")"""
@@ -12,7 +12,7 @@ object JmhBenchmarkWorkflow {
     WorkflowJob(
       runsOnExtraLabels = List("zio-http"),
       id = "runJmhBenchMarks",
-      name = "Jmh Benchmarks",
+      name = "JmhBenchmarks",
       oses = List("centos"),
       scalas = List(Scala213),
       steps = List(
@@ -30,8 +30,8 @@ object JmhBenchmarkWorkflow {
         ),
         WorkflowStep.Run(
           commands = List("cd zio-http", s"sbt zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 CookieDecodeBenchmark"),
-          id = Some("jmh HttpCollectEval"),
-          name = Some("jmh HttpCollectEval"),
+          id = Some("jmh"),
+          name = Some("jmh"),
         ),
       ),
     ),
