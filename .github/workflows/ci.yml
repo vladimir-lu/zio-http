@@ -287,6 +287,11 @@ jobs:
         java: [temurin@11]
     runs-on: [ "${{ matrix.os }}", zio-http ]
     steps:
+      - uses: actions/setup-java@v2
+        with:
+          distribution: temurin
+          java-version: 8
+
       - name: Add jmh plugin
         id: add_plugin
         run: |
