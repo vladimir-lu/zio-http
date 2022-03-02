@@ -14,7 +14,7 @@ object JmhBenchmarkWorkflow {
       scalas = List(Scala213),
       steps = List(
         WorkflowStep.Run(
-          commands = List("cd zio-http",s"sed -i -e '$$a${jmhPlugin}' project/plugins.sbt, cd zio-http"),
+          commands = List("cd zio-http",s"sed -i -e '$$a${jmhPlugin}' project/plugins.sbt", "cd zio-http"),
           id = Some("add_plugin"),
           name = Some("Add jmh plugin"),
         ),
