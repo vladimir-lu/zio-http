@@ -295,4 +295,4 @@ jobs:
 
       - name: jmh
         id: jmh
-        run: 'sbt ++${{ matrix.scala }} ''project root'' ''zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1'''
+        run: 'sbt ++${{ matrix.scala }} ''cd zio-http'' ''zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1'''
