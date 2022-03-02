@@ -174,7 +174,6 @@ jobs:
     steps:
       - uses: release-drafter/release-drafter@v5
 
-
   update_docs:
     name: Publish Documentation
     if: ${{ github.ref == 'refs/heads/main' }}
@@ -278,3 +277,17 @@ jobs:
 
             ${{steps.result.outputs.concurrency_result}}
             ${{steps.result.outputs.request_result}}
+
+  runJmhBenchMarks:
+    name: JmhBenchmarks
+    strategy:
+      matrix:
+        os: [centos]
+        scala: [2.13.8]
+        java: [temurin@11]
+    runs-on: [ "${{ matrix.os }}", zio-http ]
+    steps:
+      - id: result
+        env:
+          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
+        run: echo new job

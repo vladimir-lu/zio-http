@@ -9,9 +9,6 @@ object JmhBenchmarkWorkflow {
       name = "JmhBenchmarks",
       oses = List("centos"),
       scalas = List(Scala213),
-      cond = Some(
-        "${{ github.event_name == 'pull_request'}}"
-      ),
       steps = List(
         WorkflowStep.Run(
           env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
