@@ -290,7 +290,7 @@ jobs:
       - name: Add jmh plugin
         id: add_plugin
         run: |
-          ls
+          cd zio-http
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
 
       - name: Update Build Definition
