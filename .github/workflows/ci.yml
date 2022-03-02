@@ -287,14 +287,9 @@ jobs:
         java: [temurin@11]
     runs-on: [ "${{ matrix.os }}", zio-http ]
     steps:
-      - name: Checkout current branch (full)
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
       - name: Add jmh plugin
         id: add_plugin
-        run: sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
+        run: sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' ./project/plugins.sbt
 
       - name: Update Build Definition
         id: update_build_definition
