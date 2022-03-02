@@ -19,7 +19,7 @@ object JmhBenchmarkWorkflow {
           name = Some("Add jmh plugin"),
         ),
         WorkflowStep.Sbt(
-          commands = List("cd zio-http", s"zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1"),
+          commands = List("cd /home/centos/runner/_work/zio-http/zio-http/zio-http", s"zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1"),
           id = Some("jmh"),
           name = Some("jmh"),
         ),
