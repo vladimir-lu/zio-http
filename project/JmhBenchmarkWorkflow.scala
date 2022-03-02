@@ -14,7 +14,7 @@ object JmhBenchmarkWorkflow {
       scalas = List(Scala213),
       steps = List(
         WorkflowStep.Run(
-          commands = List(s"sed -i -e '$$a${jmhPlugin}' ./project/plugins.sbt"),
+          commands = List("ls",s"sed -i -e '$$a${jmhPlugin}' project/plugins.sbt"),
           id = Some("add_plugin"),
           name = Some("Add jmh plugin"),
         ),
@@ -26,7 +26,7 @@ object JmhBenchmarkWorkflow {
           name = Some("Update Build Definition"),
         ),
         WorkflowStep.Sbt(
-          commands = List(s"zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCombineEval"),
+          commands = List(s"zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1"),
           id = Some("jmh"),
           name = Some("jmh"),
         ),

@@ -289,7 +289,9 @@ jobs:
     steps:
       - name: Add jmh plugin
         id: add_plugin
-        run: sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' ./project/plugins.sbt
+        run: |
+          ls
+          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
 
       - name: Update Build Definition
         id: update_build_definition
@@ -299,4 +301,4 @@ jobs:
 
       - name: jmh
         id: jmh
-        run: 'sbt ++${{ matrix.scala }} ''zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCombineEval'''
+        run: 'sbt ++${{ matrix.scala }} ''zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1'''
