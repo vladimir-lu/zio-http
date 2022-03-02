@@ -279,7 +279,7 @@ jobs:
             ${{steps.result.outputs.request_result}}
 
   runJmhBenchMarks:
-    name: JmhBenchmarks
+    name: Jmh Benchmarks
     strategy:
       matrix:
         os: [centos]
@@ -298,8 +298,8 @@ jobs:
           cd zio-http
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
 
-      - name: jmh
-        id: jmh
+      - name: jmh HttpCollectEval
+        id: jmh HttpCollectEval
         run: |
           cd zio-http
-          sbt zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1
+          sbt zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCollectEval
