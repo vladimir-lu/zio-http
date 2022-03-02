@@ -14,12 +14,12 @@ object JmhBenchmarkWorkflow {
       scalas = List(Scala213),
       steps = List(
         WorkflowStep.Run(
-          commands = List("cd zio-http",s"sed -i -e '$$a${jmhPlugin}' project/plugins.sbt"),
+          commands = List("cd zio-http",s"sed -i -e '$$a${jmhPlugin}' project/plugins.sbt, cd zio-http"),
           id = Some("add_plugin"),
           name = Some("Add jmh plugin"),
         ),
-        WorkflowStep.Sbt(
-          commands = List("cd /home/centos/runner/_work/zio-http/zio-http/zio-http", s"zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1"),
+        WorkflowStep.Run(
+          commands = List( s"sbt zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1"),
           id = Some("jmh"),
           name = Some("jmh"),
         ),

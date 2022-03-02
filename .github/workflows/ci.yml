@@ -291,8 +291,8 @@ jobs:
         id: add_plugin
         run: |
           cd zio-http
-          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
+          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt, cd zio-http
 
       - name: jmh
         id: jmh
-        run: 'sbt ++${{ matrix.scala }} ''cd /home/centos/runner/_work/zio-http/zio-http/zio-http'' ''zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1'''
+        run: 'sbt zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1'
