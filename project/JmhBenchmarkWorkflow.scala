@@ -1,5 +1,4 @@
 import BuildHelper.{JmhVersion, Scala213}
-import ScoverageWorkFlow.{coverageDirectivesBase, scoveragePlugin}
 import sbtghactions.GenerativePlugin.autoImport.{WorkflowJob, WorkflowStep}
 
 object JmhBenchmarkWorkflow {
@@ -15,7 +14,7 @@ object JmhBenchmarkWorkflow {
       scalas = List(Scala213),
       steps = List(
         WorkflowStep.Run(
-          commands = List(s"sed -i -e '$$a${scoveragePlugin}' project/plugins.sbt"),
+          commands = List(s"sed -i -e '$$a${jmhPlugin}' project/plugins.sbt"),
           id = Some("add_plugin"),
           name = Some("Add jmh plugin"),
         ),
