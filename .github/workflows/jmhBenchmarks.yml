@@ -1,9 +1,13 @@
 name: jmh-benchmarks
 
-on: push
+on:
+  push:
+    branches: [ '**' ]
+    tags: [ v* ]
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-
   jmh-benchmarks:
     name: Jmh Benchmarks
     strategy:
@@ -17,5 +21,5 @@ jobs:
       - name: Jmh Benchmarks
         id: Jmh Benchmarks
         run: |
-        echo new job
+        echo "new job"
         sbt zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCollectEval
