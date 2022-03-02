@@ -293,6 +293,12 @@ jobs:
           cd zio-http
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
 
+      - name: Update Build Definition
+        id: update_build_definition
+        run: |
+
+          sed -i -e build.sbt
+
       - name: jmh
         id: jmh
         run: 'sbt ++${{ matrix.scala }} ''zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1'''

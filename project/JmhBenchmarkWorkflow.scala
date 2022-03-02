@@ -18,6 +18,13 @@ object JmhBenchmarkWorkflow {
           id = Some("add_plugin"),
           name = Some("Add jmh plugin"),
         ),
+        WorkflowStep.Run(
+          commands = List(
+            s"\nsed -i -e build.sbt",
+          ),
+          id = Some("update_build_definition"),
+          name = Some("Update Build Definition"),
+        ),
         WorkflowStep.Sbt(
           commands = List(s"zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1"),
           id = Some("jmh"),
