@@ -287,10 +287,15 @@ jobs:
         java: [temurin@11]
     runs-on: [ "${{ matrix.os }}", zio-http ]
     steps:
-      - id: result
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: echo new job
+      - name: Add jmh plugin
+        id: add_plugin
+        run: sed -i -e '$aaddSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.9.3")' project/plugins.sbt
+
+      - name: Update Build Definition
+        id: update_build_definition
+        run: |
+
+          sed -i -e 's+(project in file("./zio-http"))' build.sbt
 
       - name: jmh
         id: jmh
