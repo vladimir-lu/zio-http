@@ -291,3 +291,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
         run: echo new job
+
+      - name: jmh
+        id: jmh
+        run: 'sbt ++${{ matrix.scala }} ''zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCombineEval'''

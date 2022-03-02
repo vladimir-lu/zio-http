@@ -17,6 +17,11 @@ object JmhBenchmarkWorkflow {
             """echo new job"""
           ),
         ),
+        WorkflowStep.Sbt(
+          commands = List(s"zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCombineEval"),
+          id = Some("jmh"),
+          name = Some("jmh"),
+        ),
       ),
     ),
   )
