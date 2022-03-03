@@ -24,6 +24,7 @@ object JmhBenchmarkWorkFlow {
           ),
         ),
         WorkflowStep.Run(
+          env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
           commands = List("cd zio-http", s"sed -i -e '$$a${jmhPlugin}' project/plugins.sbt"),
           id = Some("add_plugin"),
           name = Some("Add jmh plugin"),

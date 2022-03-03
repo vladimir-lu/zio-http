@@ -294,6 +294,8 @@ jobs:
 
       - name: Add jmh plugin
         id: add_plugin
+        env:
+          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
         run: |
           cd zio-http
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
