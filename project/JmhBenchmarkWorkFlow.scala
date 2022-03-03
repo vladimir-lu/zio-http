@@ -10,12 +10,12 @@ object JmhBenchmarkWorkFlow {
   val files =
     FileTreeView.default.list(Glob("./zio-http-benchmarks/src/main/scala/zhttp.benchmarks/**"), scalaSources).map(_._1.toString)
   val batchSize = files.size/3
-  val list = files.map( s => {
+  val lists = files.map(s => {
     val str = s.replaceAll("^.*[\\/\\\\]", "").replaceAll(".scala", "")
     s"""sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 $str" """
   }).grouped(batchSize).toList
 
-  def apply(): Seq[WorkflowJob] = list.map( l =>
+  def apply(): Seq[WorkflowJob] = lists.map(l =>
     WorkflowJob(
       runsOnExtraLabels = List("zio-http"),
       id = s"runJmhBenchMarks ${l.take(1).hashCode()}.",
