@@ -11,14 +11,12 @@ object JmhBenchmarkWorkFlow {
   val jmhPlugin = s"""addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "${JmhVersion}")"""
 
   val scalaSources: PathFilter = ** / "*.scala"
-  //zio-http-benchmarks/target/scala-2.13/classes/benchmarks/jmh_generated
 
   val files =
     FileTreeView.default.list(Glob("./zio-http-benchmarks/src/main/scala/zhttp.benchmarks/**"), scalaSources).map(_._1.toString)
 
-  val classes = files.map(b => b.substring(b.lastIndexOf("/")+1,b.lastIndexOf(".")))
+  val classes = files.map(_.replaceAll("^.*[\\/\\\\]", "").replaceAll(".scala",""))
   val c = classes.map(f => s"""sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 $f" """)
-
 
   def apply(): Seq[WorkflowJob] = Seq(
     WorkflowJob(
