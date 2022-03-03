@@ -30,7 +30,7 @@ object JmhBenchmarkWorkFlow {
         ),
         WorkflowStep.Run(
           env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
-          commands = List("cd zio-http", s"""sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 CookieDecodeBenchmark""""),
+          commands = List("cd zio-http", s"""sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1""""),
           id = Some("jmh"),
           name = Some("jmh"),
         ),
