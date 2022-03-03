@@ -18,7 +18,7 @@ object JmhBenchmarkWorkFlow {
   def apply(): Seq[WorkflowJob] = lists.map(l =>
     WorkflowJob(
       runsOnExtraLabels = List("zio-http"),
-      id = l.hashCode().toString,
+      id = "runJmhBenchMarks",
       name = "JmhBenchmarks",
       oses = List("centos"),
       scalas = List(Scala213),
