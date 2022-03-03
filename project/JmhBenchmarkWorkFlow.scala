@@ -7,7 +7,6 @@ object JmhBenchmarkWorkFlow {
 
   val jmhPlugin = s"""addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "${JmhVersion}")"""
 
-
   def apply(): Seq[WorkflowJob] = Seq(
     WorkflowJob(
       runsOnExtraLabels = List("zio-http"),
@@ -31,7 +30,7 @@ object JmhBenchmarkWorkFlow {
         ),
         WorkflowStep.Run(
           env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
-          commands = List("cd zio-http", s"sbt zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 CookieDecodeBenchmark"),
+          commands = List("cd zio-http", s"""sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 CookieDecodeBenchmark""""),
           id = Some("jmh"),
           name = Some("jmh"),
         ),
