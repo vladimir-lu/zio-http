@@ -306,4 +306,4 @@ jobs:
           GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
         run: |
           cd zio-http
-          sbt zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 CookieDecodeBenchmark
+          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 CookieDecodeBenchmark"
