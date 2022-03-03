@@ -17,11 +17,12 @@ object JmhBenchmarkWorkFlow {
 
   val classes = files.map(_.replaceAll("^.*[\\/\\\\]", "").replaceAll(".scala",""))
   val c = classes.map(f => s"""sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 $f" """)
-
-  def apply(): Seq[WorkflowJob] = Seq(
+  val batchSize = c.size/3
+  val lists = c.grouped(batchSize).toList
+  def apply(): Seq[WorkflowJob] = lists.map( list =>
     WorkflowJob(
       runsOnExtraLabels = List("zio-http"),
-      id = "runJmhBenchMarks",
+      id = s"runJmhBenchMarks ${list.take(1)}.",
       name = "JmhBenchmarks",
       oses = List("centos"),
       scalas = List(Scala213),
@@ -41,13 +42,14 @@ object JmhBenchmarkWorkFlow {
         ),
         WorkflowStep.Run(
           env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
-          commands = List("cd zio-http") ++ c,
+          commands = List("cd zio-http") ++ list,
           id = Some("jmh"),
           name = Some("jmh"),
         ),
       ),
     ),
   )
+
 
 
 }
