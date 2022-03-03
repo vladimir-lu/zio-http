@@ -3,26 +3,22 @@ import sbt.nio.file.FileTreeView
 import sbt.{**, Glob, PathFilter}
 import sbtghactions.GenerativePlugin.autoImport.{UseRef, WorkflowJob, WorkflowStep}
 
-
-
 object JmhBenchmarkWorkFlow {
 
-
   val jmhPlugin = s"""addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "${JmhVersion}")"""
-
   val scalaSources: PathFilter = ** / "*.scala"
-
   val files =
     FileTreeView.default.list(Glob("./zio-http-benchmarks/src/main/scala/zhttp.benchmarks/**"), scalaSources).map(_._1.toString)
+  val batchSize = files.size/3
+  val list = files.map( s => {
+    val str = s.replaceAll("^.*[\\/\\\\]", "").replaceAll(".scala", "")
+    s"""sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 $str" """
+  }).grouped(batchSize).toList
 
-  val classes = files.map(_.replaceAll("^.*[\\/\\\\]", "").replaceAll(".scala",""))
-  val c = classes.map(f => s"""sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 $f" """)
-  val batchSize = c.size/3
-  val lists = c.grouped(batchSize).toList
-  def apply(): Seq[WorkflowJob] = lists.map( list =>
+  def apply(): Seq[WorkflowJob] = list.map( l =>
     WorkflowJob(
       runsOnExtraLabels = List("zio-http"),
-      id = s"runJmhBenchMarks ${list.take(1)}.",
+      id = s"runJmhBenchMarks ${l.take(1).hashCode()}.",
       name = "JmhBenchmarks",
       oses = List("centos"),
       scalas = List(Scala213),
@@ -42,7 +38,7 @@ object JmhBenchmarkWorkFlow {
         ),
         WorkflowStep.Run(
           env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
-          commands = List("cd zio-http") ++ list,
+          commands = List("cd zio-http") ++ l,
           id = Some("jmh"),
           name = Some("jmh"),
         ),
