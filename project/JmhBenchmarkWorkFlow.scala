@@ -14,10 +14,11 @@ object JmhBenchmarkWorkFlow {
     val str = s.replaceAll("^.*[\\/\\\\]", "").replaceAll(".scala", "")
     s"""sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 $str" """
   }).grouped(batchSize).toList
+  var a = 0;
   val workflows = lists.map(l =>
     WorkflowJob(
       runsOnExtraLabels = List("zio-http"),
-      id = s"runJmhBenchMarks ${l.hashCode().toString}",
+      id = s"runJmhBenchMarks${a = a+ 1; a}",
       name = "JmhBenchmarks",
       oses = List("centos"),
       scalas = List(Scala213),
