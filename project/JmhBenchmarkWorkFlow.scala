@@ -49,7 +49,7 @@ object JmhBenchmarkWorkFlow {
 
   def jmhBenchmarkMain(batchSize: Int) = lists(batchSize).map(l =>
     WorkflowJob(
-      runsOnExtraLabels = List("zio-http"),
+      runsOnExtraLabels = List("zio-http-benchmark"),
       id = s"runJmhBenchMarks Main${l.head.hashCode}",
       name = "JmhBenchmarks main",
       oses = List("centos"),
@@ -65,6 +65,6 @@ object JmhBenchmarkWorkFlow {
     )
   )
 
-  def apply(batchSize: Int): Seq[WorkflowJob] = jmhBenchmark(batchSize)
+  def apply(batchSize: Int): Seq[WorkflowJob] = jmhBenchmark(batchSize) ++ jmhBenchmarkMain(batchSize)
 
 }

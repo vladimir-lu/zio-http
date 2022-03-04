@@ -341,3 +341,29 @@ jobs:
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpNestedFlatMapEval" 
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpRouteTextPerf" 
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 ProbeContentTypeBenchmark" 
+
+  runJmhBenchMarks Main1229056083:
+    name: JmhBenchmarks main
+    strategy:
+      matrix:
+        os: [centos]
+        scala: [2.13.8]
+        java: [temurin@11]
+    runs-on: [ "${{ matrix.os }}", zio-http-benchmark ]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: main
+
+  runJmhBenchMarks Main-1997882200:
+    name: JmhBenchmarks main
+    strategy:
+      matrix:
+        os: [centos]
+        scala: [2.13.8]
+        java: [temurin@11]
+    runs-on: [ "${{ matrix.os }}", zio-http-benchmark ]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: main
