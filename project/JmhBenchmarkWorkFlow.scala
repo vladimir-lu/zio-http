@@ -47,10 +47,10 @@ object JmhBenchmarkWorkFlow {
     ),
   )
 
-  def jmhBenchmarkMain = Seq(
+  val jmhBenchmarkMain = Seq(
     WorkflowJob(
       runsOnExtraLabels = List("zio-http"),
-      id = s"runJmhBenchMarks Main",
+      id = s"runJmhBenchMarksMain",
       name = "JmhBenchmarks main",
       oses = List("centos"),
       scalas = List(Scala213),

@@ -342,7 +342,7 @@ jobs:
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpRouteTextPerf" 
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 ProbeContentTypeBenchmark" 
 
-  runJmhBenchMarks Main:
+  runJmhBenchMarksMain:
     name: JmhBenchmarks main
     strategy:
       matrix:
