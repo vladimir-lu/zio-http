@@ -1,4 +1,5 @@
 import BuildHelper.{JmhVersion, Scala213}
+import JmhBenchmarkWorkFlow.jmhPlugin
 import sbt.nio.file.FileTreeView
 import sbt.{**, Glob, PathFilter}
 import sbtghactions.GenerativePlugin.autoImport.{UseRef, WorkflowJob, WorkflowStep}
@@ -15,7 +16,7 @@ object JmhBenchmarkWorkFlow {
     s"""sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 $str" """
   }).sorted.grouped(batchSize).toList
 
-  def apply(batchSize: Int): Seq[WorkflowJob] = lists(batchSize).map(l =>
+  def apply(batchSize: Int): Seq[WorkflowJob] = lists(batchSize).map(l => {
     WorkflowJob(
       runsOnExtraLabels = List("zio-http"),
       id = s"runJmhBenchMarks${l.head.hashCode}",
@@ -42,6 +43,16 @@ object JmhBenchmarkWorkFlow {
           id = Some("jmh"),
           name = Some("jmh"),
         ),
+      ),
+    )
+    ,
+    WorkflowJob(
+      runsOnExtraLabels = List("zio-http"),
+      id = s"runJmhBenchMarks Main${l.head.hashCode}",
+      name = "JmhBenchmarks main",
+      oses = List("centos"),
+      scalas = List(Scala213),
+      steps = List(
         WorkflowStep.Use(
           UseRef.Public("actions", "checkout", s"v2"),
           Map(
@@ -58,17 +69,18 @@ object JmhBenchmarkWorkFlow {
         WorkflowStep.Run(
           env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
           commands = List("cd zio-http", s"sed -i -e '$$a${jmhPlugin}' project/plugins.sbt"),
-          id = Some("add_plugin in main"),
-          name = Some("Add jmh plugin in main"),
+          id = Some("add_plugin"),
+          name = Some("Add jmh plugin"),
         ),
         WorkflowStep.Run(
           env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
           commands = List("cd zio-http") ++ l,
-          id = Some("jmh in main"),
-          name = Some("jmh in main"),
+          id = Some("jmh"),
+          name = Some("jmh"),
         ),
       ),
-    ),
+    )
+  }
   )
 
 }
