@@ -55,12 +55,6 @@ object JmhBenchmarkWorkFlow {
       oses = List("centos"),
       scalas = List(Scala213),
       steps = List(
-        WorkflowStep.Use(
-          UseRef.Public("actions", "checkout", s"v2"),
-          Map(
-            "ref" -> "main",
-          ),
-        ),
         WorkflowStep.Run(
           env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
           commands = List("echo shruti"),

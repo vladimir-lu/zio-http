@@ -351,10 +351,6 @@ jobs:
         java: [temurin@11]
     runs-on: [ "${{ matrix.os }}", zio-http ]
     steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: main
-
       - name: echo
         id: echo
         env:
