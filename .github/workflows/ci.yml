@@ -349,7 +349,7 @@ jobs:
         os: [centos]
         scala: [2.13.8]
         java: [temurin@11]
-    runs-on: [ "${{ matrix.os }}", zio-http-benchmark ]
+    runs-on: [ "${{ matrix.os }}", zio-http ]
     steps:
       - uses: actions/checkout@v2
         with:

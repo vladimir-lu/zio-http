@@ -49,7 +49,7 @@ object JmhBenchmarkWorkFlow {
 
   def jmhBenchmarkMain = Seq(
     WorkflowJob(
-      runsOnExtraLabels = List("zio-http-benchmark"),
+      runsOnExtraLabels = List("zio-http"),
       id = s"runJmhBenchMarks Main",
       name = "JmhBenchmarks main",
       oses = List("centos"),
