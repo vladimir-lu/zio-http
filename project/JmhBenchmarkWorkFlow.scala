@@ -61,6 +61,12 @@ object JmhBenchmarkWorkFlow {
             "ref" -> "main",
           ),
         ),
+        WorkflowStep.Run(
+          env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
+          commands = List("echo shruti"),
+          id = Some("echo"),
+          name = Some("echo"),
+        ),
       ),
     )
   )
