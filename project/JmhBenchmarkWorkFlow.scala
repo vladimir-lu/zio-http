@@ -16,7 +16,7 @@ object JmhBenchmarkWorkFlow {
     s"""sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 $str" """
   }).sorted.grouped(batchSize).toList
 
-  def apply(batchSize: Int): Seq[WorkflowJob] = lists(batchSize).map(l => {
+  def jmhBenchmark(batchSize: Int) = lists(batchSize).map(l =>
     WorkflowJob(
       runsOnExtraLabels = List("zio-http"),
       id = s"runJmhBenchMarks${l.head.hashCode}",
@@ -44,8 +44,10 @@ object JmhBenchmarkWorkFlow {
           name = Some("jmh"),
         ),
       ),
-    )
-    ,
+    ),
+  )
+
+  def jmhBenchmarkMain(batchSize: Int) = lists(batchSize).map(l =>
     WorkflowJob(
       runsOnExtraLabels = List("zio-http"),
       id = s"runJmhBenchMarks Main${l.head.hashCode}",
@@ -80,7 +82,8 @@ object JmhBenchmarkWorkFlow {
         ),
       ),
     )
-  }
   )
+
+  def apply(batchSize: Int): Seq[WorkflowJob] = jmhBenchmark(batchSize) ++ jmhBenchmarkMain(batchSize)
 
 }
