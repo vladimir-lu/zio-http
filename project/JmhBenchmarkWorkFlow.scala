@@ -43,18 +43,6 @@ object JmhBenchmarkWorkFlow {
           id = Some("jmh"),
           name = Some("jmh"),
         ),
-      ),
-    ),
-  )
-
-  def jmhBenchmarkMain(batchSize: Int) = lists(batchSize).map(l =>
-    WorkflowJob(
-      runsOnExtraLabels = List("zio-http"),
-      id = s"runJmhBenchMarksMain${l.head.hashCode}",
-      name = "JmhBenchmarks main",
-      oses = List("centos"),
-      scalas = List(Scala213),
-      steps = List(
         WorkflowStep.Use(
           UseRef.Public("actions", "checkout", s"v2"),
           Map(
@@ -81,9 +69,10 @@ object JmhBenchmarkWorkFlow {
           name = Some("jmh"),
         ),
       ),
-    )
+    ),
   )
 
-  def apply(batchSize: Int): Seq[WorkflowJob] = jmhBenchmark(batchSize) ++ jmhBenchmarkMain(batchSize)
+
+  def apply(batchSize: Int): Seq[WorkflowJob] = jmhBenchmark(batchSize)
 
 }
