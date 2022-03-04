@@ -65,6 +65,6 @@ object JmhBenchmarkWorkFlow {
     )
   )
 
-  def apply(batchSize: Int): Seq[WorkflowJob] = jmhBenchmark(batchSize) ++ jmhBenchmarkMain(batchSize)
+  def apply(batchSize: Int): Seq[WorkflowJob] = jmhBenchmark(batchSize)
 
 }
