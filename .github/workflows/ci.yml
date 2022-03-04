@@ -314,16 +314,16 @@ jobs:
         with:
           ref: main
 
-      - name: Add jmh plugin
-        id: add_plugin
+      - name: Add jmh plugin in main
+        id: add_plugin in main
         env:
           GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
         run: |
           cd zio-http
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
 
-      - name: jmh
-        id: jmh
+      - name: jmh in main
+        id: jmh in main
         env:
           GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
         run: |
@@ -368,16 +368,16 @@ jobs:
         with:
           ref: main
 
-      - name: Add jmh plugin
-        id: add_plugin
+      - name: Add jmh plugin in main
+        id: add_plugin in main
         env:
           GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
         run: |
           cd zio-http
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
 
-      - name: jmh
-        id: jmh
+      - name: jmh in main
+        id: jmh in main
         env:
           GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
         run: |

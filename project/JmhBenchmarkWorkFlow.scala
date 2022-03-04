@@ -51,14 +51,14 @@ object JmhBenchmarkWorkFlow {
         WorkflowStep.Run(
           env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
           commands = List("cd zio-http", s"sed -i -e '$$a${jmhPlugin}' project/plugins.sbt"),
-          id = Some("add_plugin"),
-          name = Some("Add jmh plugin"),
+          id = Some("add_plugin in main"),
+          name = Some("Add jmh plugin in main"),
         ),
         WorkflowStep.Run(
           env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
           commands = List("cd zio-http") ++ l,
-          id = Some("jmh"),
-          name = Some("jmh"),
+          id = Some("jmh in main"),
+          name = Some("jmh in main"),
         ),
       ),
     ),
