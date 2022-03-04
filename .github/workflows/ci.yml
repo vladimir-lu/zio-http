@@ -278,8 +278,8 @@ jobs:
             ${{steps.result.outputs.concurrency_result}}
             ${{steps.result.outputs.request_result}}
 
-  runJmhBenchMarks-69118213:
-    name: JmhBenchmarks-69118213
+  runJmhBenchMarks1229056083:
+    name: JmhBenchmarks
     strategy:
       matrix:
         os: [centos]
@@ -306,12 +306,12 @@ jobs:
           GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
         run: |
           cd zio-http
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCombineEval" 
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 ProbeContentTypeBenchmark" 
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 CookieDecodeBenchmark" 
+          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCollectEval" 
+          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCombineEval" 
 
   runJmhBenchMarks-1997882200:
-    name: JmhBenchmarks-1997882200
+    name: JmhBenchmarks
     strategy:
       matrix:
         os: [centos]
@@ -339,5 +339,5 @@ jobs:
         run: |
           cd zio-http
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpNestedFlatMapEval" 
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCollectEval" 
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpRouteTextPerf" 
+          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 ProbeContentTypeBenchmark" 

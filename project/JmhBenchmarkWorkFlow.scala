@@ -13,13 +13,13 @@ object JmhBenchmarkWorkFlow {
     val path = file._1.toString
     val str = path.replaceAll("^.*[\\/\\\\]", "").replaceAll(".scala", "")
     s"""sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 $str" """
-  }).grouped(batchSize).toList
+  }).sorted.grouped(batchSize).toList
 
   def apply(batchSize: Int): Seq[WorkflowJob] = lists(batchSize).map(l =>
     WorkflowJob(
       runsOnExtraLabels = List("zio-http"),
       id = s"runJmhBenchMarks${l.head.hashCode}",
-      name = s"JmhBenchmarks${l.head.hashCode}",
+      name = "JmhBenchmarks",
       oses = List("centos"),
       scalas = List(Scala213),
       steps = List(
