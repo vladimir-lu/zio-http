@@ -7,19 +7,19 @@ object JmhBenchmarkWorkFlow {
 
   val jmhPlugin = s"""addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "${JmhVersion}")"""
   val scalaSources: PathFilter = ** / "*.scala"
-  val files =
-    FileTreeView.default.list(Glob("./zio-http-benchmarks/src/main/scala/zhttp.benchmarks/**"), scalaSources).map(_._1.toString)
-  val batchSize = files.size/3
-  val lists = files.map(s => {
-    val str = s.replaceAll("^.*[\\/\\\\]", "").replaceAll(".scala", "")
+  val files = FileTreeView.default.list(Glob("./zio-http-benchmarks/src/main/scala/zhttp.benchmarks/**"), scalaSources)
+
+  def lists(batchSize: Int) = files.map(file => {
+    val path = file._1.toString
+    val str = path.replaceAll("^.*[\\/\\\\]", "").replaceAll(".scala", "")
     s"""sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 $str" """
   }).grouped(batchSize).toList
 
-  def apply(): Seq[WorkflowJob] = lists.map(l =>
+  def apply(batchSize: Int): Seq[WorkflowJob] = lists(batchSize).map(l =>
     WorkflowJob(
       runsOnExtraLabels = List("zio-http"),
       id = s"runJmhBenchMarks${l.head.hashCode}",
-      name = "JmhBenchmarks",
+      name = s"JmhBenchmarks${l.head.hashCode}",
       oses = List("centos"),
       scalas = List(Scala213),
       steps = List(

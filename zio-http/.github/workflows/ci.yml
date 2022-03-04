@@ -279,7 +279,7 @@ jobs:
             ${{steps.result.outputs.request_result}}
 
   runJmhBenchMarks-69118213:
-    name: JmhBenchmarks
+    name: JmhBenchmarks-69118213
     strategy:
       matrix:
         os: [centos]
@@ -310,7 +310,7 @@ jobs:
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 ProbeContentTypeBenchmark" 
 
   runJmhBenchMarks1229056083:
-    name: JmhBenchmarks
+    name: JmhBenchmarks1229056083
     strategy:
       matrix:
         os: [centos]
@@ -341,7 +341,7 @@ jobs:
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpNestedFlatMapEval" 
 
   runJmhBenchMarks1134157478:
-    name: JmhBenchmarks
+    name: JmhBenchmarks1134157478
     strategy:
       matrix:
         os: [centos]

@@ -279,7 +279,7 @@ jobs:
             ${{steps.result.outputs.request_result}}
 
   runJmhBenchMarks-69118213:
-    name: JmhBenchmarks
+    name: JmhBenchmarks-69118213
     strategy:
       matrix:
         os: [centos]
@@ -308,40 +308,10 @@ jobs:
           cd zio-http
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCombineEval" 
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 ProbeContentTypeBenchmark" 
-
-  runJmhBenchMarks1229056083:
-    name: JmhBenchmarks
-    strategy:
-      matrix:
-        os: [centos]
-        scala: [2.13.8]
-        java: [temurin@11]
-    runs-on: [ "${{ matrix.os }}", zio-http ]
-    steps:
-      - uses: actions/setup-java@v2
-        with:
-          distribution: temurin
-          java-version: 8
-
-      - name: Add jmh plugin
-        id: add_plugin
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: |
-          cd zio-http
-          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-
-      - name: jmh
-        id: jmh
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: |
-          cd zio-http
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 CookieDecodeBenchmark" 
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpNestedFlatMapEval" 
 
-  runJmhBenchMarks1134157478:
-    name: JmhBenchmarks
+  runJmhBenchMarks-1997882200:
+    name: JmhBenchmarks-1997882200
     strategy:
       matrix:
         os: [centos]
@@ -368,5 +338,6 @@ jobs:
           GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
         run: |
           cd zio-http
+          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpNestedFlatMapEval" 
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCollectEval" 
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpRouteTextPerf" 
