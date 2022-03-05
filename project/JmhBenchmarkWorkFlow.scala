@@ -1,5 +1,4 @@
 import BuildHelper.{JmhVersion, Scala213}
-import JmhBenchmarkWorkFlow.jmhPlugin
 import sbt.nio.file.FileTreeView
 import sbt.{**, Glob, PathFilter}
 import sbtghactions.GenerativePlugin.autoImport.{UseRef, WorkflowJob, WorkflowStep}

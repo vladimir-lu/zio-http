@@ -197,7 +197,7 @@ jobs:
           git config --global user.name "${{secrets.GIT_USER}}"
           npm run deploy
 
-  runJmhBenchMarks1229056083:
+  runJmhMain:
     name: JmhBenchmarks
     strategy:
       matrix:
@@ -206,6 +206,10 @@ jobs:
         java: [temurin@11]
     runs-on: [ "${{ matrix.os }}", zio-http ]
     steps:
+      - uses: actions/checkout@main
+        with:
+          ref: main
+
       - uses: actions/setup-java@v2
         with:
           distribution: temurin
@@ -217,28 +221,4 @@ jobs:
           GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
         run: |
           cd zio-http
-          git checkout origin/main
-          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-
-  runJmhBenchMarks-1997882200:
-    name: JmhBenchmarks
-    strategy:
-      matrix:
-        os: [centos]
-        scala: [2.13.8]
-        java: [temurin@11]
-    runs-on: [ "${{ matrix.os }}", zio-http ]
-    steps:
-      - uses: actions/setup-java@v2
-        with:
-          distribution: temurin
-          java-version: 8
-
-      - name: jmh_main
-        id: jmh_main
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: |
-          cd zio-http
-          git checkout origin/main
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
