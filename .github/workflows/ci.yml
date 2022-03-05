@@ -206,9 +206,16 @@ jobs:
         java: [temurin@11]
     runs-on: [ "${{ matrix.os }}", zio-http ]
     steps:
+      - name: Clean up
+        id: clean_up
+        env:
+          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
+        run: sudo rm -rf *
+
       - uses: actions/checkout@main
         with:
           ref: main
+          path: zio-http
 
       - uses: actions/setup-java@v2
         with:

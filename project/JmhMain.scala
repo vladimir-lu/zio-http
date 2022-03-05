@@ -13,10 +13,17 @@ object JmhMain {
       oses = List("centos"),
       scalas = List(Scala213),
       steps = List(
+        WorkflowStep.Run(
+          env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
+          id = Some("clean_up"),
+          name = Some("Clean up"),
+          commands = List("sudo rm -rf *"),
+        ),
         WorkflowStep.Use(
           UseRef.Public("actions", "checkout", s"main"),
           Map(
             "ref" -> "main",
+            "path" -> "zio-http"
           ),
         ),
         WorkflowStep.Use(
