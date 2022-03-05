@@ -197,87 +197,6 @@ jobs:
           git config --global user.name "${{secrets.GIT_USER}}"
           npm run deploy
 
-  unsafeRunScoverage:
-    name: Unsafe Scoverage
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        scala: [2.13.8]
-        java: [temurin@11]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Checkout current branch (full)
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Add Scoverage
-        id: add_plugin
-        run: sed -i -e '$aaddSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.9.3")' project/plugins.sbt
-
-      - name: Update Build Definition
-        id: update_build_definition
-        run: |
-
-          sed -i -e 's+(project in file("./zio-http"))+(project in file("./zio-http")).settings(coverageEnabled:=true,coverageMinimumStmtTotal:=50.0,coverageMinimumBranchTotal:=60.0)+g' build.sbt
-
-      - name: Run Coverage
-        id: run_coverage
-        run: sbt ++${{ matrix.scala }} 'coverage; project zhttp; test; coverageReport'
-
-      - name: Push Codecov
-        id: push_codecov
-        run: 'bash <(curl -s https://codecov.io/bash)'
-
-  runBenchMarks:
-    name: Benchmarks
-    if: ${{ github.event_name == 'pull_request'}}
-    strategy:
-      matrix:
-        os: [centos]
-        scala: [2.13.8]
-        java: [temurin@11]
-    runs-on: [ "${{ matrix.os }}", zio-http ]
-    steps:
-      - name: Clean up
-        id: clean_up
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: sudo rm -rf *
-
-      - uses: actions/checkout@v2
-        with:
-          path: zio-http
-
-      - uses: actions/checkout@v2
-        with:
-          repository: dream11/FrameworkBenchmarks
-          path: FrameworkBenchMarks
-
-      - id: result
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: |
-          cp ./zio-http/example/src/main/scala/example/PlainTextBenchmarkServer.scala ./FrameworkBenchMarks/frameworks/Scala/zio-http/src/main/scala/Main.scala
-          cd ./FrameworkBenchMarks
-          sed -i "s/---COMMIT_SHA---/${{github.event.pull_request.head.repo.owner.login}}\/zio-http.git#${{github.event.pull_request.head.sha}}/g" frameworks/Scala/zio-http/build.sbt
-          ./tfb  --test zio-http | tee result
-          RESULT_REQUEST=$(echo $(grep -B 1 -A 17 "Concurrency: 256 for plaintext" result) | grep -oiE "requests/sec: [0-9]+.[0-9]+")
-          RESULT_CONCURRENCY=$(echo $(grep -B 1 -A 17 "Concurrency: 256 for plaintext" result) | grep -oiE "concurrency: [0-9]+")
-          echo ::set-output name=request_result::$(echo $RESULT_REQUEST)
-          echo ::set-output name=concurrency_result::$(echo $RESULT_CONCURRENCY)
-
-      - if: ${{github.event.pull_request.head.repo.full_name == 'dream11/zio-http'}}
-        uses: peter-evans/commit-comment@v1
-        with:
-          sha: ${{github.event.pull_request.head.sha}}
-          body: |
-
-            **🚀 Performance Benchmark:**
-
-            ${{steps.result.outputs.concurrency_result}}
-            ${{steps.result.outputs.request_result}}
-
   runJmhBenchMarks1229056083:
     name: JmhBenchmarks
     strategy:
@@ -292,31 +211,13 @@ jobs:
           distribution: temurin
           java-version: 8
 
-      - name: Add jmh plugin
-        id: add_plugin
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: |
-          cd zio-http
-          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-
-      - name: jmh
-        id: jmh
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: |
-          cd zio-http
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 CookieDecodeBenchmark" 
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCollectEval" 
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCombineEval" 
-
       - name: jmh_main
         id: jmh_main
         env:
           GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
         run: |
-          git checkout origin/main
           cd zio-http
+          git checkout origin/main
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
 
   runJmhBenchMarks-1997882200:
@@ -333,29 +234,11 @@ jobs:
           distribution: temurin
           java-version: 8
 
-      - name: Add jmh plugin
-        id: add_plugin
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: |
-          cd zio-http
-          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-
-      - name: jmh
-        id: jmh
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: |
-          cd zio-http
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpNestedFlatMapEval" 
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpRouteTextPerf" 
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 ProbeContentTypeBenchmark" 
-
       - name: jmh_main
         id: jmh_main
         env:
           GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
         run: |
-          git checkout origin/main
           cd zio-http
+          git checkout origin/main
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt

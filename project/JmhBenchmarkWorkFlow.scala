@@ -31,21 +31,21 @@ object JmhBenchmarkWorkFlow {
             "java-version" -> "8"
           ),
         ),
+//        WorkflowStep.Run(
+//          env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
+//          commands = List("cd zio-http", s"sed -i -e '$$a${jmhPlugin}' project/plugins.sbt"),
+//          id = Some("add_plugin"),
+//          name = Some("Add jmh plugin"),
+//        ),
+//        WorkflowStep.Run(
+//          env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
+//          commands = List("cd zio-http") ++ l,
+//          id = Some("jmh"),
+//          name = Some("jmh"),
+//        ),
         WorkflowStep.Run(
           env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
-          commands = List("cd zio-http", s"sed -i -e '$$a${jmhPlugin}' project/plugins.sbt"),
-          id = Some("add_plugin"),
-          name = Some("Add jmh plugin"),
-        ),
-        WorkflowStep.Run(
-          env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
-          commands = List("cd zio-http") ++ l,
-          id = Some("jmh"),
-          name = Some("jmh"),
-        ),
-        WorkflowStep.Run(
-          env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
-          commands = List("git checkout origin/main","cd zio-http", s"sed -i -e '$$a${jmhPlugin}' project/plugins.sbt"),
+          commands = List("cd zio-http","git checkout origin/main", s"sed -i -e '$$a${jmhPlugin}' project/plugins.sbt"),
           id = Some("jmh_main"),
           name = Some("jmh_main"),
         )
