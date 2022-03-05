@@ -37,7 +37,7 @@ ThisBuild / githubWorkflowAddedJobs      :=
       ),
       cond = Option("${{ github.ref == 'refs/heads/main' }}"),
     ),
-  ) ++ JmhBenchmarkWorkFlow(4) ++ JmhMain(4)
+  ) ++ JmhBenchmarkWorkFlow(4)
 
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowPublishTargetBranches += RefPredicate.StartsWith(Ref.Tag("v"))
