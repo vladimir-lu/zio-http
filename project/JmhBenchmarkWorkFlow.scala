@@ -17,23 +17,23 @@ object JmhBenchmarkWorkFlow {
     str
   }).sorted
 
-  def lists = sortedlist.map(str => {
-    val l = List(s"""sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 $str" | tee result_${str}""",
-      s"""RESULT_${str}=$$(echo $$(grep "thrpt" result_${str}))""",
-      s"""echo "$$RESULT_${str}"""",
-      s"""IFS=' ' read -ra PARSED_RESULT <<< "$$RESULT_${str}"""",
-      s"""echo ::set-output name=benchmark_result_${str}::$$(echo $${PARSED_RESULT[1]}": "$${PARSED_RESULT[4]})""")
+  def lists(string: String) = sortedlist.map(str => {
+    val l = List(s"""sbt -no-colors -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 $str" | tee ${str}""",
+      s"""${str}=$$(echo $$(grep "thrpt" ${str}))""",
+      s"""echo "$$${str}"""",
+      s"""IFS=' ' read -ra PARSED_RESULT <<< "$$${str}"""",
+      s"""echo ::set-output name=benchmark_${str}::$$(echo $${PARSED_RESULT[1]}": "$${PARSED_RESULT[4]})""")
 
     WorkflowStep.Run(
       env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
       commands = List("cd zio-http", s"sed -i -e '$$a${jmhPlugin}' project/plugins.sbt") ++ l,
-      id = Some(s"result_${str}"),
-      name = Some(s"result_${str}"),
+      id = Some(s"${string}_${str}"),
+      name = Some(s"${string}_${str}"),
     )
   })
 
-  def result: String = sortedlist.map(str => {
-    s"""$${{steps.result_${str}.outputs.benchmark_result_${str}}}"""
+  def output(string: String): String = sortedlist.map(str => {
+    s"""$${{steps.${string}_${str}.outputs.benchmark_${str}}}"""
   }).mkString("\n|")
 
 
@@ -52,49 +52,44 @@ object JmhBenchmarkWorkFlow {
             "distribution" -> "temurin",
             "java-version" -> "8"
           ),
-        )) ++ lists ++ List(
+        )) ++ lists("current") ++ List(
+        WorkflowStep.Run(
+          env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
+          id = Some("clean_up"),
+          name = Some("Clean up"),
+          commands = List("sudo rm -rf *"),
+        ),
+        WorkflowStep.Use(
+          UseRef.Public("actions", "checkout", s"main"),
+          Map(
+            "ref" -> "main",
+            "path" -> "zio-http"
+          ),
+        ),
+        WorkflowStep.Use(
+          UseRef.Public("actions", "setup-java", s"v2"),
+          Map(
+            "distribution" -> "temurin",
+            "java-version" -> "8"
+          ),
+        )) ++ lists("main") ++ List(
         WorkflowStep.Use(
           ref = UseRef.Public("peter-evans", "commit-comment", "v1"),
           params = Map(
             "sha"  -> "${{github.sha}}",
             "body" ->
               s"""
-                |**\uD83D\uDE80 Jmh Benchmark:**
-                |
-                |${result}""".stripMargin,
+                 |**\uD83D\uDE80 Jmh Benchmark:**
+                 |
+                 |- Current Branch:
+                 |${output("current")}
+                 |- Main Branch:
+                 |${output("main")}""".stripMargin,
           ),
         ),
-      )
-//        WorkflowStep.Run(
-//          env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
-//          id = Some("clean_up"),
-//          name = Some("Clean up"),
-//          commands = List("sudo rm -rf *"),
-//        ),
-//        WorkflowStep.Use(
-//          UseRef.Public("actions", "checkout", s"main"),
-//          Map(
-//            "ref" -> "main",
-//            "path" -> "zio-http"
-//          ),
-//        ),
-//        WorkflowStep.Use(
-//          UseRef.Public("actions", "setup-java", s"v2"),
-//          Map(
-//            "distribution" -> "temurin",
-//            "java-version" -> "8"
-//          ),
-//        ),
-//        WorkflowStep.Run(
-//          env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
-//          commands = List("cd zio-http", s"sed -i -e '$$a${jmhPlugin}' project/plugins.sbt") ++ l ++ output,
-//          id = Some("jmh_main"),
-//          name = Some("jmh_main"),
-//        )
-//      ),
-//    ),
+      ),
+    ),
 
-  )
   )
 
   def apply(): Seq[WorkflowJob] = jmhBenchmark()

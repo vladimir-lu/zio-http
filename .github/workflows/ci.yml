@@ -176,83 +176,177 @@ jobs:
           distribution: temurin
           java-version: 8
 
-      - name: result_CookieDecodeBenchmark
-        id: result_CookieDecodeBenchmark
+      - name: current_CookieDecodeBenchmark
+        id: current_CookieDecodeBenchmark
         env:
           GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
         run: |
           cd zio-http
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 CookieDecodeBenchmark" | tee result_CookieDecodeBenchmark
-          RESULT_CookieDecodeBenchmark=$(echo $(grep "thrpt" result_CookieDecodeBenchmark))
-          echo "$RESULT_CookieDecodeBenchmark"
-          IFS=' ' read -ra PARSED_RESULT <<< "$RESULT_CookieDecodeBenchmark"
-          echo ::set-output name=benchmark_result_CookieDecodeBenchmark::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
+          sbt -no-colors -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 CookieDecodeBenchmark" | tee CookieDecodeBenchmark
+          CookieDecodeBenchmark=$(echo $(grep "thrpt" CookieDecodeBenchmark))
+          echo "$CookieDecodeBenchmark"
+          IFS=' ' read -ra PARSED_RESULT <<< "$CookieDecodeBenchmark"
+          echo ::set-output name=benchmark_CookieDecodeBenchmark::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
 
-      - name: result_HttpCollectEval
-        id: result_HttpCollectEval
+      - name: current_HttpCollectEval
+        id: current_HttpCollectEval
         env:
           GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
         run: |
           cd zio-http
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCollectEval" | tee result_HttpCollectEval
-          RESULT_HttpCollectEval=$(echo $(grep "thrpt" result_HttpCollectEval))
-          echo "$RESULT_HttpCollectEval"
-          IFS=' ' read -ra PARSED_RESULT <<< "$RESULT_HttpCollectEval"
-          echo ::set-output name=benchmark_result_HttpCollectEval::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
+          sbt -no-colors -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCollectEval" | tee HttpCollectEval
+          HttpCollectEval=$(echo $(grep "thrpt" HttpCollectEval))
+          echo "$HttpCollectEval"
+          IFS=' ' read -ra PARSED_RESULT <<< "$HttpCollectEval"
+          echo ::set-output name=benchmark_HttpCollectEval::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
 
-      - name: result_HttpCombineEval
-        id: result_HttpCombineEval
+      - name: current_HttpCombineEval
+        id: current_HttpCombineEval
         env:
           GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
         run: |
           cd zio-http
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCombineEval" | tee result_HttpCombineEval
-          RESULT_HttpCombineEval=$(echo $(grep "thrpt" result_HttpCombineEval))
-          echo "$RESULT_HttpCombineEval"
-          IFS=' ' read -ra PARSED_RESULT <<< "$RESULT_HttpCombineEval"
-          echo ::set-output name=benchmark_result_HttpCombineEval::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
+          sbt -no-colors -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCombineEval" | tee HttpCombineEval
+          HttpCombineEval=$(echo $(grep "thrpt" HttpCombineEval))
+          echo "$HttpCombineEval"
+          IFS=' ' read -ra PARSED_RESULT <<< "$HttpCombineEval"
+          echo ::set-output name=benchmark_HttpCombineEval::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
 
-      - name: result_HttpNestedFlatMapEval
-        id: result_HttpNestedFlatMapEval
+      - name: current_HttpNestedFlatMapEval
+        id: current_HttpNestedFlatMapEval
         env:
           GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
         run: |
           cd zio-http
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpNestedFlatMapEval" | tee result_HttpNestedFlatMapEval
-          RESULT_HttpNestedFlatMapEval=$(echo $(grep "thrpt" result_HttpNestedFlatMapEval))
-          echo "$RESULT_HttpNestedFlatMapEval"
-          IFS=' ' read -ra PARSED_RESULT <<< "$RESULT_HttpNestedFlatMapEval"
-          echo ::set-output name=benchmark_result_HttpNestedFlatMapEval::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
+          sbt -no-colors -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpNestedFlatMapEval" | tee HttpNestedFlatMapEval
+          HttpNestedFlatMapEval=$(echo $(grep "thrpt" HttpNestedFlatMapEval))
+          echo "$HttpNestedFlatMapEval"
+          IFS=' ' read -ra PARSED_RESULT <<< "$HttpNestedFlatMapEval"
+          echo ::set-output name=benchmark_HttpNestedFlatMapEval::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
 
-      - name: result_HttpRouteTextPerf
-        id: result_HttpRouteTextPerf
+      - name: current_HttpRouteTextPerf
+        id: current_HttpRouteTextPerf
         env:
           GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
         run: |
           cd zio-http
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpRouteTextPerf" | tee result_HttpRouteTextPerf
-          RESULT_HttpRouteTextPerf=$(echo $(grep "thrpt" result_HttpRouteTextPerf))
-          echo "$RESULT_HttpRouteTextPerf"
-          IFS=' ' read -ra PARSED_RESULT <<< "$RESULT_HttpRouteTextPerf"
-          echo ::set-output name=benchmark_result_HttpRouteTextPerf::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
+          sbt -no-colors -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpRouteTextPerf" | tee HttpRouteTextPerf
+          HttpRouteTextPerf=$(echo $(grep "thrpt" HttpRouteTextPerf))
+          echo "$HttpRouteTextPerf"
+          IFS=' ' read -ra PARSED_RESULT <<< "$HttpRouteTextPerf"
+          echo ::set-output name=benchmark_HttpRouteTextPerf::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
 
-      - name: result_ProbeContentTypeBenchmark
-        id: result_ProbeContentTypeBenchmark
+      - name: current_ProbeContentTypeBenchmark
+        id: current_ProbeContentTypeBenchmark
         env:
           GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
         run: |
           cd zio-http
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 ProbeContentTypeBenchmark" | tee result_ProbeContentTypeBenchmark
-          RESULT_ProbeContentTypeBenchmark=$(echo $(grep "thrpt" result_ProbeContentTypeBenchmark))
-          echo "$RESULT_ProbeContentTypeBenchmark"
-          IFS=' ' read -ra PARSED_RESULT <<< "$RESULT_ProbeContentTypeBenchmark"
-          echo ::set-output name=benchmark_result_ProbeContentTypeBenchmark::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
+          sbt -no-colors -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 ProbeContentTypeBenchmark" | tee ProbeContentTypeBenchmark
+          ProbeContentTypeBenchmark=$(echo $(grep "thrpt" ProbeContentTypeBenchmark))
+          echo "$ProbeContentTypeBenchmark"
+          IFS=' ' read -ra PARSED_RESULT <<< "$ProbeContentTypeBenchmark"
+          echo ::set-output name=benchmark_ProbeContentTypeBenchmark::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
+
+      - name: Clean up
+        id: clean_up
+        env:
+          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
+        run: sudo rm -rf *
+
+      - uses: actions/checkout@main
+        with:
+          ref: main
+          path: zio-http
+
+      - uses: actions/setup-java@v2
+        with:
+          distribution: temurin
+          java-version: 8
+
+      - name: main_CookieDecodeBenchmark
+        id: main_CookieDecodeBenchmark
+        env:
+          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
+        run: |
+          cd zio-http
+          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
+          sbt -no-colors -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 CookieDecodeBenchmark" | tee CookieDecodeBenchmark
+          CookieDecodeBenchmark=$(echo $(grep "thrpt" CookieDecodeBenchmark))
+          echo "$CookieDecodeBenchmark"
+          IFS=' ' read -ra PARSED_RESULT <<< "$CookieDecodeBenchmark"
+          echo ::set-output name=benchmark_CookieDecodeBenchmark::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
+
+      - name: main_HttpCollectEval
+        id: main_HttpCollectEval
+        env:
+          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
+        run: |
+          cd zio-http
+          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
+          sbt -no-colors -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCollectEval" | tee HttpCollectEval
+          HttpCollectEval=$(echo $(grep "thrpt" HttpCollectEval))
+          echo "$HttpCollectEval"
+          IFS=' ' read -ra PARSED_RESULT <<< "$HttpCollectEval"
+          echo ::set-output name=benchmark_HttpCollectEval::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
+
+      - name: main_HttpCombineEval
+        id: main_HttpCombineEval
+        env:
+          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
+        run: |
+          cd zio-http
+          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
+          sbt -no-colors -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCombineEval" | tee HttpCombineEval
+          HttpCombineEval=$(echo $(grep "thrpt" HttpCombineEval))
+          echo "$HttpCombineEval"
+          IFS=' ' read -ra PARSED_RESULT <<< "$HttpCombineEval"
+          echo ::set-output name=benchmark_HttpCombineEval::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
+
+      - name: main_HttpNestedFlatMapEval
+        id: main_HttpNestedFlatMapEval
+        env:
+          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
+        run: |
+          cd zio-http
+          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
+          sbt -no-colors -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpNestedFlatMapEval" | tee HttpNestedFlatMapEval
+          HttpNestedFlatMapEval=$(echo $(grep "thrpt" HttpNestedFlatMapEval))
+          echo "$HttpNestedFlatMapEval"
+          IFS=' ' read -ra PARSED_RESULT <<< "$HttpNestedFlatMapEval"
+          echo ::set-output name=benchmark_HttpNestedFlatMapEval::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
+
+      - name: main_HttpRouteTextPerf
+        id: main_HttpRouteTextPerf
+        env:
+          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
+        run: |
+          cd zio-http
+          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
+          sbt -no-colors -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpRouteTextPerf" | tee HttpRouteTextPerf
+          HttpRouteTextPerf=$(echo $(grep "thrpt" HttpRouteTextPerf))
+          echo "$HttpRouteTextPerf"
+          IFS=' ' read -ra PARSED_RESULT <<< "$HttpRouteTextPerf"
+          echo ::set-output name=benchmark_HttpRouteTextPerf::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
+
+      - name: main_ProbeContentTypeBenchmark
+        id: main_ProbeContentTypeBenchmark
+        env:
+          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
+        run: |
+          cd zio-http
+          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
+          sbt -no-colors -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 ProbeContentTypeBenchmark" | tee ProbeContentTypeBenchmark
+          ProbeContentTypeBenchmark=$(echo $(grep "thrpt" ProbeContentTypeBenchmark))
+          echo "$ProbeContentTypeBenchmark"
+          IFS=' ' read -ra PARSED_RESULT <<< "$ProbeContentTypeBenchmark"
+          echo ::set-output name=benchmark_ProbeContentTypeBenchmark::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
 
       - uses: peter-evans/commit-comment@v1
         with:
@@ -261,9 +355,17 @@ jobs:
 
             **🚀 Jmh Benchmark:**
 
-            ${{steps.result_CookieDecodeBenchmark.outputs.benchmark_result_CookieDecodeBenchmark}}
-            ${{steps.result_HttpCollectEval.outputs.benchmark_result_HttpCollectEval}}
-            ${{steps.result_HttpCombineEval.outputs.benchmark_result_HttpCombineEval}}
-            ${{steps.result_HttpNestedFlatMapEval.outputs.benchmark_result_HttpNestedFlatMapEval}}
-            ${{steps.result_HttpRouteTextPerf.outputs.benchmark_result_HttpRouteTextPerf}}
-            ${{steps.result_ProbeContentTypeBenchmark.outputs.benchmark_result_ProbeContentTypeBenchmark}}
+            - Current Branch:
+            ${{steps.current_CookieDecodeBenchmark.outputs.benchmark_CookieDecodeBenchmark}}
+            ${{steps.current_HttpCollectEval.outputs.benchmark_HttpCollectEval}}
+            ${{steps.current_HttpCombineEval.outputs.benchmark_HttpCombineEval}}
+            ${{steps.current_HttpNestedFlatMapEval.outputs.benchmark_HttpNestedFlatMapEval}}
+            ${{steps.current_HttpRouteTextPerf.outputs.benchmark_HttpRouteTextPerf}}
+            ${{steps.current_ProbeContentTypeBenchmark.outputs.benchmark_ProbeContentTypeBenchmark}}
+            - Main Branch:
+            ${{steps.main_CookieDecodeBenchmark.outputs.benchmark_CookieDecodeBenchmark}}
+            ${{steps.main_HttpCollectEval.outputs.benchmark_HttpCollectEval}}
+            ${{steps.main_HttpCombineEval.outputs.benchmark_HttpCombineEval}}
+            ${{steps.main_HttpNestedFlatMapEval.outputs.benchmark_HttpNestedFlatMapEval}}
+            ${{steps.main_HttpRouteTextPerf.outputs.benchmark_HttpRouteTextPerf}}
+            ${{steps.main_ProbeContentTypeBenchmark.outputs.benchmark_ProbeContentTypeBenchmark}}
