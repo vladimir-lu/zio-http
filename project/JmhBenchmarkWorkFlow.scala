@@ -20,8 +20,8 @@ object JmhBenchmarkWorkFlow {
   def lists = sortedlist.map(str => {
     val l = List(s"""sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 $str" | tee result_${str}""",
       s"""RESULT_${str}=$$(echo $$(grep "thrpt" result_${str}))""",
-      s"""echo "$$RESULT_REQUEST_${str}"""",
-      """IFS=' ' read -ra PARSED_RESULT <<< "$RESULT"""",
+      s"""echo "$$RESULT_${str}"""",
+      s"""IFS=' ' read -ra PARSED_RESULT <<< "$$RESULT_${str}"""",
       s"""echo ::set-output name=benchmark_result_${str}::$$(echo $${PARSED_RESULT[1]}": "$${PARSED_RESULT[4]})""")
 
     WorkflowStep.Run(
