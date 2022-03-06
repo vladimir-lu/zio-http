@@ -162,7 +162,7 @@ jobs:
           PGP_SECRET: ${{ secrets.PGP_SECRET }}
         run: sbt ++${{ matrix.scala }} ci-release
 
-  run_Jmh_BenchMarks_HttpCombineEval:
+  run_Jmh_BenchMarks:
     name: Jmh_Benchmarks
     strategy:
       matrix:
@@ -176,17 +176,77 @@ jobs:
           distribution: temurin
           java-version: 8
 
-      - name: result
-        id: result
+      - name: result_HttpCombineEval
+        id: result_HttpCombineEval
         env:
           GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
         run: |
           cd zio-http
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCombineEval" | tee result0
-          RESULT_REQUEST0=$(echo $(grep "thrpt" result0))
-          echo "$RESULT_REQUEST0"
-          echo ::set-output name=benchmark_result0::$(echo "$RESULT_REQUEST0")
+          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCombineEval" | tee result_0
+          RESULT_REQUEST_0=$(echo $(grep "thrpt" result_0))
+          echo "$RESULT_REQUEST_0"
+          echo ::set-output name=benchmark_result_0::$(echo "$RESULT_REQUEST_0")
+
+      - name: result_ProbeContentTypeBenchmark
+        id: result_ProbeContentTypeBenchmark
+        env:
+          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
+        run: |
+          cd zio-http
+          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
+          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 ProbeContentTypeBenchmark" | tee result_1
+          RESULT_REQUEST_1=$(echo $(grep "thrpt" result_1))
+          echo "$RESULT_REQUEST_1"
+          echo ::set-output name=benchmark_result_1::$(echo "$RESULT_REQUEST_1")
+
+      - name: result_CookieDecodeBenchmark
+        id: result_CookieDecodeBenchmark
+        env:
+          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
+        run: |
+          cd zio-http
+          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
+          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 CookieDecodeBenchmark" | tee result_2
+          RESULT_REQUEST_2=$(echo $(grep "thrpt" result_2))
+          echo "$RESULT_REQUEST_2"
+          echo ::set-output name=benchmark_result_2::$(echo "$RESULT_REQUEST_2")
+
+      - name: result_HttpNestedFlatMapEval
+        id: result_HttpNestedFlatMapEval
+        env:
+          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
+        run: |
+          cd zio-http
+          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
+          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpNestedFlatMapEval" | tee result_3
+          RESULT_REQUEST_3=$(echo $(grep "thrpt" result_3))
+          echo "$RESULT_REQUEST_3"
+          echo ::set-output name=benchmark_result_3::$(echo "$RESULT_REQUEST_3")
+
+      - name: result_HttpCollectEval
+        id: result_HttpCollectEval
+        env:
+          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
+        run: |
+          cd zio-http
+          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
+          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCollectEval" | tee result_4
+          RESULT_REQUEST_4=$(echo $(grep "thrpt" result_4))
+          echo "$RESULT_REQUEST_4"
+          echo ::set-output name=benchmark_result_4::$(echo "$RESULT_REQUEST_4")
+
+      - name: result_HttpRouteTextPerf
+        id: result_HttpRouteTextPerf
+        env:
+          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
+        run: |
+          cd zio-http
+          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
+          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpRouteTextPerf" | tee result_5
+          RESULT_REQUEST_5=$(echo $(grep "thrpt" result_5))
+          echo "$RESULT_REQUEST_5"
+          echo ::set-output name=benchmark_result_5::$(echo "$RESULT_REQUEST_5")
 
       - uses: peter-evans/commit-comment@v1
         with:
@@ -196,178 +256,8 @@ jobs:
             **🚀 Jmh Benchmark:**
 
             ${{steps.result.outputs.benchmark_result_HttpCombineEval}}
-
-  run_Jmh_BenchMarks_ProbeContentTypeBenchmark:
-    name: Jmh_Benchmarks
-    strategy:
-      matrix:
-        os: [centos]
-        scala: [2.13.8]
-        java: [temurin@11]
-    runs-on: [ "${{ matrix.os }}", zio-http ]
-    steps:
-      - uses: actions/setup-java@v2
-        with:
-          distribution: temurin
-          java-version: 8
-
-      - name: result
-        id: result
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: |
-          cd zio-http
-          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 ProbeContentTypeBenchmark" | tee result1
-          RESULT_REQUEST1=$(echo $(grep "thrpt" result1))
-          echo "$RESULT_REQUEST1"
-          echo ::set-output name=benchmark_result1::$(echo "$RESULT_REQUEST1")
-
-      - uses: peter-evans/commit-comment@v1
-        with:
-          sha: ${{github.sha}}
-          body: |
-
-            **🚀 Jmh Benchmark:**
-
             ${{steps.result.outputs.benchmark_result_ProbeContentTypeBenchmark}}
-
-  run_Jmh_BenchMarks_CookieDecodeBenchmark:
-    name: Jmh_Benchmarks
-    strategy:
-      matrix:
-        os: [centos]
-        scala: [2.13.8]
-        java: [temurin@11]
-    runs-on: [ "${{ matrix.os }}", zio-http ]
-    steps:
-      - uses: actions/setup-java@v2
-        with:
-          distribution: temurin
-          java-version: 8
-
-      - name: result
-        id: result
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: |
-          cd zio-http
-          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 CookieDecodeBenchmark" | tee result2
-          RESULT_REQUEST2=$(echo $(grep "thrpt" result2))
-          echo "$RESULT_REQUEST2"
-          echo ::set-output name=benchmark_result2::$(echo "$RESULT_REQUEST2")
-
-      - uses: peter-evans/commit-comment@v1
-        with:
-          sha: ${{github.sha}}
-          body: |
-
-            **🚀 Jmh Benchmark:**
-
             ${{steps.result.outputs.benchmark_result_CookieDecodeBenchmark}}
-
-  run_Jmh_BenchMarks_HttpNestedFlatMapEval:
-    name: Jmh_Benchmarks
-    strategy:
-      matrix:
-        os: [centos]
-        scala: [2.13.8]
-        java: [temurin@11]
-    runs-on: [ "${{ matrix.os }}", zio-http ]
-    steps:
-      - uses: actions/setup-java@v2
-        with:
-          distribution: temurin
-          java-version: 8
-
-      - name: result
-        id: result
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: |
-          cd zio-http
-          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpNestedFlatMapEval" | tee result3
-          RESULT_REQUEST3=$(echo $(grep "thrpt" result3))
-          echo "$RESULT_REQUEST3"
-          echo ::set-output name=benchmark_result3::$(echo "$RESULT_REQUEST3")
-
-      - uses: peter-evans/commit-comment@v1
-        with:
-          sha: ${{github.sha}}
-          body: |
-
-            **🚀 Jmh Benchmark:**
-
             ${{steps.result.outputs.benchmark_result_HttpNestedFlatMapEval}}
-
-  run_Jmh_BenchMarks_HttpCollectEval:
-    name: Jmh_Benchmarks
-    strategy:
-      matrix:
-        os: [centos]
-        scala: [2.13.8]
-        java: [temurin@11]
-    runs-on: [ "${{ matrix.os }}", zio-http ]
-    steps:
-      - uses: actions/setup-java@v2
-        with:
-          distribution: temurin
-          java-version: 8
-
-      - name: result
-        id: result
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: |
-          cd zio-http
-          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCollectEval" | tee result4
-          RESULT_REQUEST4=$(echo $(grep "thrpt" result4))
-          echo "$RESULT_REQUEST4"
-          echo ::set-output name=benchmark_result4::$(echo "$RESULT_REQUEST4")
-
-      - uses: peter-evans/commit-comment@v1
-        with:
-          sha: ${{github.sha}}
-          body: |
-
-            **🚀 Jmh Benchmark:**
-
             ${{steps.result.outputs.benchmark_result_HttpCollectEval}}
-
-  run_Jmh_BenchMarks_HttpRouteTextPerf:
-    name: Jmh_Benchmarks
-    strategy:
-      matrix:
-        os: [centos]
-        scala: [2.13.8]
-        java: [temurin@11]
-    runs-on: [ "${{ matrix.os }}", zio-http ]
-    steps:
-      - uses: actions/setup-java@v2
-        with:
-          distribution: temurin
-          java-version: 8
-
-      - name: result
-        id: result
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: |
-          cd zio-http
-          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpRouteTextPerf" | tee result5
-          RESULT_REQUEST5=$(echo $(grep "thrpt" result5))
-          echo "$RESULT_REQUEST5"
-          echo ::set-output name=benchmark_result5::$(echo "$RESULT_REQUEST5")
-
-      - uses: peter-evans/commit-comment@v1
-        with:
-          sha: ${{github.sha}}
-          body: |
-
-            **🚀 Jmh Benchmark:**
-
             ${{steps.result.outputs.benchmark_result_HttpRouteTextPerf}}
