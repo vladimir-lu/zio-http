@@ -11,33 +11,7 @@ ThisBuild / githubWorkflowPREventTypes   := Seq(
   PREventType.Reopened,
   PREventType.Edited,
 )
-ThisBuild / githubWorkflowAddedJobs      :=
-  Seq(
-    WorkflowJob(
-      id = "update_release_draft",
-      name = "Release Drafter",
-      steps = List(WorkflowStep.Use(UseRef.Public("release-drafter", "release-drafter", s"v${releaseDrafterVersion}"))),
-      cond = Option("${{ github.base_ref == 'main' }}"),
-    ),
-    WorkflowJob(
-      id = "update_docs",
-      name = "Publish Documentation",
-      steps = List(
-        WorkflowStep.Use(UseRef.Public("actions", "checkout", s"v2")),
-        WorkflowStep.Use(UseRef.Public("actions", "setup-node", s"v2")),
-        WorkflowStep.Run(
-          env = Map("GIT_PASS" -> "${{secrets.ACTIONS_PAT}}", "GIT_USER" -> "${{secrets.GIT_USER}}"),
-          commands = List(
-            "cd ./docs/website",
-            "npm install",
-            "git config --global user.name \"${{secrets.GIT_USER}}\"",
-            "npm run deploy",
-          ),
-        ),
-      ),
-      cond = Option("${{ github.ref == 'refs/heads/main' }}"),
-    ),
-  ) ++ JmhBenchmarkWorkFlow(3)
+ThisBuild / githubWorkflowAddedJobs      := JmhBenchmarkWorkFlow()
 
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowPublishTargetBranches += RefPredicate.StartsWith(Ref.Tag("v"))

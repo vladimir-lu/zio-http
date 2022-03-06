@@ -11,25 +11,23 @@ object JmhBenchmarkWorkFlow {
   val scalaSources: PathFilter = ** / "*.scala"
   val files: Seq[(Path, FileAttributes)] = FileTreeView.default.list(Glob("./zio-http-benchmarks/src/main/scala/zhttp.benchmarks/**"), scalaSources)
 
-  def lists(batchSize: Int) = files.map((file: (Path, FileAttributes)) => {
-    val path = file._1.toString
+  def lists = files.zipWithIndex.map((file: ((Path, FileAttributes), Int)) => {
+    val path = file._1._1.toString
     val str = path.replaceAll("^.*[\\/\\\\]", "").replaceAll(".scala", "")
-    s"""sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 $str" """
-  }).sorted.grouped(batchSize).toList
-
-  def output = files.map((file: (Path, FileAttributes)) => {
-    val path = file._1.toString
-    val str = path.replaceAll("^.*[\\/\\\\]", "").replaceAll(".scala", "")
-
-   s"""echo ::set-output name=${str}::score"""
+    (List(s"""sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 $str" | tee result${file._2}""",
+      s"""RESULT_REQUEST${file._2}=$$(echo $$(grep "thrpt" result${file._2}))""",
+      s"""echo "$$RESULT_REQUEST${file._2}"""",
+      s"""echo ::set-output name=benchmark_result${file._2}::$$(echo "$$RESULT_REQUEST${file._2}")"""),str)
   })
 
+//   def jmh(b: Int) = lists.grouped(b).toList
 
-  def jmhBenchmark(batchSize: Int) = lists(batchSize).map(l => {
+
+  def jmhBenchmark() = lists.map((x: (List[String], String)) =>
     WorkflowJob(
       runsOnExtraLabels = List("zio-http"),
-      id = s"runJmhBenchMarks${l.head.hashCode}",
-      name = "JmhBenchmarks",
+      id = s"run_Jmh_BenchMarks_${x._2}",
+      name = "Jmh_Benchmarks",
       oses = List("centos"),
       scalas = List(Scala213),
       steps = List(
@@ -42,9 +40,20 @@ object JmhBenchmarkWorkFlow {
         ),
         WorkflowStep.Run(
           env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
-          commands = List("cd zio-http", s"sed -i -e '$$a${jmhPlugin}' project/plugins.sbt") ++ l ++  List("""RESULT_REQUEST=$(echo $jmh)""", """echo ::set-output name=benchmark_result::$(echo $RESULT_REQUEST)"""),
-          id = Some("jmh"),
-          name = Some("jmh"),
+          commands = List("cd zio-http", s"sed -i -e '$$a${jmhPlugin}' project/plugins.sbt") ++ x._1,
+          id = Some("result"),
+          name = Some("result"),
+        ),
+        WorkflowStep.Use(
+          ref = UseRef.Public("peter-evans", "commit-comment", "v1"),
+          params = Map(
+            "sha"  -> "${{github.sha}}",
+            "body" ->
+              s"""
+                |**\uD83D\uDE80 Jmh Benchmark:**
+                |
+                |$${{steps.result.outputs.benchmark_result_${x._2}}}""".stripMargin,
+          ),
         ),
       )
 //        WorkflowStep.Run(
@@ -74,11 +83,11 @@ object JmhBenchmarkWorkFlow {
 //          name = Some("jmh_main"),
 //        )
 //      ),
-    ),
-  }
+//    ),
+
+  )
   )
 
-
-  def apply(batchSize: Int): Seq[WorkflowJob] = jmhBenchmark(batchSize)
+  def apply(): Seq[WorkflowJob] = jmhBenchmark()
 
 }
