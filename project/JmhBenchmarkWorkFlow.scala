@@ -2,7 +2,7 @@ import java.nio.file.Path
 
 import BuildHelper.{JmhVersion, Scala213}
 import sbt.nio.file.{FileAttributes, FileTreeView}
-import sbt.{**, Glob, PathFilter, file}
+import sbt.{**, Glob, PathFilter}
 import sbtghactions.GenerativePlugin.autoImport.{UseRef, WorkflowJob, WorkflowStep}
 
 object JmhBenchmarkWorkFlow {
@@ -55,10 +55,10 @@ object JmhBenchmarkWorkFlow {
         env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
         commands = List("cd zio-http",
           s"sed -i -e '$$a${jmhPlugin}' project/plugins.sbt",
-          """sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 | tee result""",
-          s"""RESULT=$$(echo $$(grep "thrpt" result))""",
-          s"""echo ::set-output name=benchmark_result::$$(echo "$$RESULT")"""
-        ) ,
+          s"""sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1" | tee result""",
+          """RESULT=$(echo $(grep "thrpt" result))""",
+          """echo ::set-output name=benchmark_result::$(echo "$RESULT")"""
+        ),
         id = Some("jmh_benchmarks"),
         name = Some("jmh_benchmarks"),
       ),

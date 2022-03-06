@@ -183,7 +183,7 @@ jobs:
         run: |
           cd zio-http
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 | tee result
+          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1" | tee result
           RESULT=$(echo $(grep "thrpt" result))
           echo ::set-output name=benchmark_result::$(echo "$RESULT")
 
