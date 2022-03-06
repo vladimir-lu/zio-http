@@ -19,9 +19,10 @@ object JmhBenchmarkWorkFlow {
 
   def lists = sortedlist.map(str => {
     val l = List(s"""sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 $str" | tee result_${str}""",
-      s"""RESULT_REQUEST_${str}=$$(echo $$(grep "thrpt" result_${str}))""",
+      s"""RESULT_${str}=$$(echo $$(grep "thrpt" result_${str})""",
       s"""echo "$$RESULT_REQUEST_${str}"""",
-      s"""echo ::set-output name=benchmark_result_${str}::$$(echo "$$RESULT_REQUEST_${str}")""")
+      """IFS=' ' read -ra PARSED_RESULT <<< "$RESULT"""",
+      s"""echo ::set-output name=benchmark_result_${str}::$$(echo $${PARSED_RESULT[1]}": "$${PARSED_RESULT[4]})""")
 
     WorkflowStep.Run(
       env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
@@ -34,6 +35,7 @@ object JmhBenchmarkWorkFlow {
   def result: String = sortedlist.map(str => {
     s"""$${{steps.result_${str}.outputs.benchmark_result_${str}}}"""
   }).mkString("\n|")
+
 
 
   def jmhBenchmark() = Seq(
@@ -50,27 +52,16 @@ object JmhBenchmarkWorkFlow {
             "distribution" -> "temurin",
             "java-version" -> "8"
           ),
-        ),
-      WorkflowStep.Run(
-        env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
-        commands = List("cd zio-http",
-          s"sed -i -e '$$a${jmhPlugin}' project/plugins.sbt",
-          s"""sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1" | tee result""",
-          """RESULT=$(echo $(grep "thrpt" result))""",
-          """echo ::set-output name=benchmark_result::$(echo "$RESULT")"""
-        ),
-        id = Some("result"),
-        name = Some("result"),
-      ),
+        )) ++ lists ++ List(
         WorkflowStep.Use(
           ref = UseRef.Public("peter-evans", "commit-comment", "v1"),
           params = Map(
             "sha"  -> "${{github.sha}}",
             "body" ->
-              """
+              s"""
                 |**\uD83D\uDE80 Jmh Benchmark:**
                 |
-                |${{steps.result.outputs.benchmark_result}}""".stripMargin,
+                |${result}""".stripMargin,
           ),
         ),
       )
