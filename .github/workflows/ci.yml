@@ -184,7 +184,7 @@ jobs:
           cd zio-http
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 CookieDecodeBenchmark" | tee result_CookieDecodeBenchmark
-          RESULT_CookieDecodeBenchmark=$(echo $(grep "thrpt" result_CookieDecodeBenchmark)
+          RESULT_CookieDecodeBenchmark=$(echo $(grep "thrpt" result_CookieDecodeBenchmark))
           echo "$RESULT_REQUEST_CookieDecodeBenchmark"
           IFS=' ' read -ra PARSED_RESULT <<< "$RESULT"
           echo ::set-output name=benchmark_result_CookieDecodeBenchmark::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
@@ -197,7 +197,7 @@ jobs:
           cd zio-http
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCollectEval" | tee result_HttpCollectEval
-          RESULT_HttpCollectEval=$(echo $(grep "thrpt" result_HttpCollectEval)
+          RESULT_HttpCollectEval=$(echo $(grep "thrpt" result_HttpCollectEval))
           echo "$RESULT_REQUEST_HttpCollectEval"
           IFS=' ' read -ra PARSED_RESULT <<< "$RESULT"
           echo ::set-output name=benchmark_result_HttpCollectEval::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
@@ -210,7 +210,7 @@ jobs:
           cd zio-http
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCombineEval" | tee result_HttpCombineEval
-          RESULT_HttpCombineEval=$(echo $(grep "thrpt" result_HttpCombineEval)
+          RESULT_HttpCombineEval=$(echo $(grep "thrpt" result_HttpCombineEval))
           echo "$RESULT_REQUEST_HttpCombineEval"
           IFS=' ' read -ra PARSED_RESULT <<< "$RESULT"
           echo ::set-output name=benchmark_result_HttpCombineEval::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
@@ -223,7 +223,7 @@ jobs:
           cd zio-http
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpNestedFlatMapEval" | tee result_HttpNestedFlatMapEval
-          RESULT_HttpNestedFlatMapEval=$(echo $(grep "thrpt" result_HttpNestedFlatMapEval)
+          RESULT_HttpNestedFlatMapEval=$(echo $(grep "thrpt" result_HttpNestedFlatMapEval))
           echo "$RESULT_REQUEST_HttpNestedFlatMapEval"
           IFS=' ' read -ra PARSED_RESULT <<< "$RESULT"
           echo ::set-output name=benchmark_result_HttpNestedFlatMapEval::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
@@ -236,7 +236,7 @@ jobs:
           cd zio-http
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpRouteTextPerf" | tee result_HttpRouteTextPerf
-          RESULT_HttpRouteTextPerf=$(echo $(grep "thrpt" result_HttpRouteTextPerf)
+          RESULT_HttpRouteTextPerf=$(echo $(grep "thrpt" result_HttpRouteTextPerf))
           echo "$RESULT_REQUEST_HttpRouteTextPerf"
           IFS=' ' read -ra PARSED_RESULT <<< "$RESULT"
           echo ::set-output name=benchmark_result_HttpRouteTextPerf::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
@@ -249,7 +249,7 @@ jobs:
           cd zio-http
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 ProbeContentTypeBenchmark" | tee result_ProbeContentTypeBenchmark
-          RESULT_ProbeContentTypeBenchmark=$(echo $(grep "thrpt" result_ProbeContentTypeBenchmark)
+          RESULT_ProbeContentTypeBenchmark=$(echo $(grep "thrpt" result_ProbeContentTypeBenchmark))
           echo "$RESULT_REQUEST_ProbeContentTypeBenchmark"
           IFS=' ' read -ra PARSED_RESULT <<< "$RESULT"
           echo ::set-output name=benchmark_result_ProbeContentTypeBenchmark::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
