@@ -221,33 +221,8 @@ jobs:
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 CookieDecodeBenchmark" 
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCollectEval" 
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCombineEval" 
-
-      - name: Clean up
-        id: clean_up
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: sudo rm -rf *
-
-      - uses: actions/checkout@main
-        with:
-          ref: main
-          path: zio-http
-
-      - uses: actions/setup-java@v2
-        with:
-          distribution: temurin
-          java-version: 8
-
-      - name: jmh_main
-        id: jmh_main
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: |
-          cd zio-http
-          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 CookieDecodeBenchmark" 
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCollectEval" 
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCombineEval" 
+          RESULT_REQUEST=$(echo $jmh)
+          echo ::set-output name=benchmark_result::$(echo $RESULT_REQUEST)
 
   runJmhBenchMarks-1997882200:
     name: JmhBenchmarks
@@ -273,30 +248,5 @@ jobs:
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpNestedFlatMapEval" 
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpRouteTextPerf" 
           sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 ProbeContentTypeBenchmark" 
-
-      - name: Clean up
-        id: clean_up
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: sudo rm -rf *
-
-      - uses: actions/checkout@main
-        with:
-          ref: main
-          path: zio-http
-
-      - uses: actions/setup-java@v2
-        with:
-          distribution: temurin
-          java-version: 8
-
-      - name: jmh_main
-        id: jmh_main
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: |
-          cd zio-http
-          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpNestedFlatMapEval" 
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpRouteTextPerf" 
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 ProbeContentTypeBenchmark" 
+          RESULT_REQUEST=$(echo $jmh)
+          echo ::set-output name=benchmark_result::$(echo $RESULT_REQUEST)
