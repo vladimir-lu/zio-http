@@ -51,16 +51,26 @@ object JmhBenchmarkWorkFlow {
             "java-version" -> "8"
           ),
         ),
-      ) ++  lists ++ List(
+      WorkflowStep.Run(
+        env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
+        commands = List("cd zio-http",
+          s"sed -i -e '$$a${jmhPlugin}' project/plugins.sbt",
+          """sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 | tee result""",
+          s"""RESULT=$$(echo $$(grep "thrpt" result))""",
+          s"""echo ::set-output name=benchmark_result::$$(echo "$$RESULT")"""
+        ) ,
+        id = Some("jmh_benchmarks"),
+        name = Some("jmh_benchmarks"),
+      ),
         WorkflowStep.Use(
           ref = UseRef.Public("peter-evans", "commit-comment", "v1"),
           params = Map(
             "sha"  -> "${{github.sha}}",
             "body" ->
-              s"""
+              """
                 |**\uD83D\uDE80 Jmh Benchmark:**
                 |
-                |${result}""".stripMargin,
+                |${{steps.jmh_benchmarks.outputs.benchmark_result}}""".stripMargin,
           ),
         ),
       )

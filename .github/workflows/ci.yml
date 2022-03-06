@@ -176,77 +176,16 @@ jobs:
           distribution: temurin
           java-version: 8
 
-      - name: result_CookieDecodeBenchmark
-        id: result_CookieDecodeBenchmark
+      - name: jmh_benchmarks
+        id: jmh_benchmarks
         env:
           GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
         run: |
           cd zio-http
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 CookieDecodeBenchmark" | tee result_CookieDecodeBenchmark
-          RESULT_REQUEST_CookieDecodeBenchmark=$(echo $(grep "thrpt" result_CookieDecodeBenchmark))
-          echo "$RESULT_REQUEST_CookieDecodeBenchmark"
-          echo ::set-output name=benchmark_result_CookieDecodeBenchmark::$(echo "$RESULT_REQUEST_CookieDecodeBenchmark")
-
-      - name: result_HttpCollectEval
-        id: result_HttpCollectEval
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: |
-          cd zio-http
-          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCollectEval" | tee result_HttpCollectEval
-          RESULT_REQUEST_HttpCollectEval=$(echo $(grep "thrpt" result_HttpCollectEval))
-          echo "$RESULT_REQUEST_HttpCollectEval"
-          echo ::set-output name=benchmark_result_HttpCollectEval::$(echo "$RESULT_REQUEST_HttpCollectEval")
-
-      - name: result_HttpCombineEval
-        id: result_HttpCombineEval
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: |
-          cd zio-http
-          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCombineEval" | tee result_HttpCombineEval
-          RESULT_REQUEST_HttpCombineEval=$(echo $(grep "thrpt" result_HttpCombineEval))
-          echo "$RESULT_REQUEST_HttpCombineEval"
-          echo ::set-output name=benchmark_result_HttpCombineEval::$(echo "$RESULT_REQUEST_HttpCombineEval")
-
-      - name: result_HttpNestedFlatMapEval
-        id: result_HttpNestedFlatMapEval
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: |
-          cd zio-http
-          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpNestedFlatMapEval" | tee result_HttpNestedFlatMapEval
-          RESULT_REQUEST_HttpNestedFlatMapEval=$(echo $(grep "thrpt" result_HttpNestedFlatMapEval))
-          echo "$RESULT_REQUEST_HttpNestedFlatMapEval"
-          echo ::set-output name=benchmark_result_HttpNestedFlatMapEval::$(echo "$RESULT_REQUEST_HttpNestedFlatMapEval")
-
-      - name: result_HttpRouteTextPerf
-        id: result_HttpRouteTextPerf
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: |
-          cd zio-http
-          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpRouteTextPerf" | tee result_HttpRouteTextPerf
-          RESULT_REQUEST_HttpRouteTextPerf=$(echo $(grep "thrpt" result_HttpRouteTextPerf))
-          echo "$RESULT_REQUEST_HttpRouteTextPerf"
-          echo ::set-output name=benchmark_result_HttpRouteTextPerf::$(echo "$RESULT_REQUEST_HttpRouteTextPerf")
-
-      - name: result_ProbeContentTypeBenchmark
-        id: result_ProbeContentTypeBenchmark
-        env:
-          GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
-        run: |
-          cd zio-http
-          sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
-          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 ProbeContentTypeBenchmark" | tee result_ProbeContentTypeBenchmark
-          RESULT_REQUEST_ProbeContentTypeBenchmark=$(echo $(grep "thrpt" result_ProbeContentTypeBenchmark))
-          echo "$RESULT_REQUEST_ProbeContentTypeBenchmark"
-          echo ::set-output name=benchmark_result_ProbeContentTypeBenchmark::$(echo "$RESULT_REQUEST_ProbeContentTypeBenchmark")
+          sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 | tee result
+          RESULT=$(echo $(grep "thrpt" result))
+          echo ::set-output name=benchmark_result::$(echo "$RESULT")
 
       - uses: peter-evans/commit-comment@v1
         with:
@@ -255,9 +194,4 @@ jobs:
 
             **🚀 Jmh Benchmark:**
 
-            ${{steps.result_CookieDecodeBenchmark.outputs.benchmark_result_CookieDecodeBenchmark}}
-            ${{steps.result_HttpCollectEval.outputs.benchmark_result_HttpCollectEval}}
-            ${{steps.result_HttpCombineEval.outputs.benchmark_result_HttpCombineEval}}
-            ${{steps.result_HttpNestedFlatMapEval.outputs.benchmark_result_HttpNestedFlatMapEval}}
-            ${{steps.result_HttpRouteTextPerf.outputs.benchmark_result_HttpRouteTextPerf}}
-            ${{steps.result_ProbeContentTypeBenchmark.outputs.benchmark_result_ProbeContentTypeBenchmark}}
+            ${{steps.jmh_benchmarks.outputs.benchmark_result}}
