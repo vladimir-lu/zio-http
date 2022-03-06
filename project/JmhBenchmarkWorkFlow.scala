@@ -2,7 +2,7 @@ import java.nio.file.Path
 
 import BuildHelper.{JmhVersion, Scala213}
 import sbt.nio.file.{FileAttributes, FileTreeView}
-import sbt.{**, Glob, PathFilter}
+import sbt.{**, Glob, PathFilter, file}
 import sbtghactions.GenerativePlugin.autoImport.{UseRef, WorkflowJob, WorkflowStep}
 
 object JmhBenchmarkWorkFlow {
@@ -11,18 +11,30 @@ object JmhBenchmarkWorkFlow {
   val scalaSources: PathFilter = ** / "*.scala"
   val files: Seq[(Path, FileAttributes)] = FileTreeView.default.list(Glob("./zio-http-benchmarks/src/main/scala/zhttp.benchmarks/**"), scalaSources)
 
-  def lists = files.zipWithIndex.map((file: ((Path, FileAttributes), Int)) => {
-    val path = file._1._1.toString
-    val str = path.replaceAll("^.*[\\/\\\\]", "").replaceAll(".scala", "")
-    (List(s"""sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 $str" | tee result_${file._2}""",
-      s"""RESULT_REQUEST_${file._2}=$$(echo $$(grep "thrpt" result_${file._2}))""",
-      s"""echo "$$RESULT_REQUEST_${file._2}"""",
-      s"""echo ::set-output name=benchmark_result_${file._2}::$$(echo "$$RESULT_REQUEST_${file._2}")"""),str)
+  def sortedlist = files.map((file: (Path, FileAttributes)) => {
+    val path = file._1.toString
+   val str = path.replaceAll("^.*[\\/\\\\]", "").replaceAll(".scala", "")
+    str
+  }).sorted
+
+  def lists = sortedlist.map(str => {
+    val l = List(s"""sbt -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 $str" | tee result_${str}""",
+      s"""RESULT_REQUEST_${str}=$$(echo $$(grep "thrpt" result_${str}))""",
+      s"""echo "$$RESULT_REQUEST_${str}"""",
+      s"""echo ::set-output name=benchmark_result_${str}::$$(echo "$$RESULT_REQUEST_${str}")""")
+
+    WorkflowStep.Run(
+      env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
+      commands = List("cd zio-http", s"sed -i -e '$$a${jmhPlugin}' project/plugins.sbt") ++ l,
+      id = Some(s"result_${str}"),
+      name = Some(s"result_${str}"),
+    )
   })
 
-//   def jmh(b: Int) = lists.grouped(b).toList
+  def result: String = sortedlist.map(str => {
+    s"""$${{steps.result.outputs.benchmark_result_${str}}}"""
+  }).mkString("\n|")
 
-  val result: String = lists.map(x => s"""$${{steps.result.outputs.benchmark_result_${x._2}}}""").mkString("\n|")
 
   def jmhBenchmark() = Seq(
     WorkflowJob(
@@ -39,14 +51,7 @@ object JmhBenchmarkWorkFlow {
             "java-version" -> "8"
           ),
         ),
-      ) ++  lists.map(x =>
-        WorkflowStep.Run(
-          env = Map("GITHUB_TOKEN" -> "${{secrets.ACTIONS_PAT}}"),
-          commands = List("cd zio-http", s"sed -i -e '$$a${jmhPlugin}' project/plugins.sbt") ++ x._1,
-          id = Some(s"result_${x._2}"),
-          name = Some(s"result_${x._2}"),
-        )
-      ) ++ List(
+      ) ++  lists ++ List(
         WorkflowStep.Use(
           ref = UseRef.Public("peter-evans", "commit-comment", "v1"),
           params = Map(
