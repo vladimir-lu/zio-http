@@ -59,8 +59,8 @@ object JmhBenchmarkWorkFlow {
           """RESULT=$(echo $(grep "thrpt" result))""",
           """echo ::set-output name=benchmark_result::$(echo "$RESULT")"""
         ),
-        id = Some("jmh_benchmarks"),
-        name = Some("jmh_benchmarks"),
+        id = Some("result"),
+        name = Some("result"),
       ),
         WorkflowStep.Use(
           ref = UseRef.Public("peter-evans", "commit-comment", "v1"),
@@ -70,7 +70,7 @@ object JmhBenchmarkWorkFlow {
               """
                 |**\uD83D\uDE80 Jmh Benchmark:**
                 |
-                |${{steps.jmh_benchmarks.outputs.benchmark_result}}""".stripMargin,
+                |${{steps.result.outputs.benchmark_result}}""".stripMargin,
           ),
         ),
       )

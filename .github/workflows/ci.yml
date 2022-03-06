@@ -176,8 +176,8 @@ jobs:
           distribution: temurin
           java-version: 8
 
-      - name: jmh_benchmarks
-        id: jmh_benchmarks
+      - name: result
+        id: result
         env:
           GITHUB_TOKEN: ${{secrets.ACTIONS_PAT}}
         run: |
@@ -194,4 +194,4 @@ jobs:
 
             **🚀 Jmh Benchmark:**
 
-            ${{steps.jmh_benchmarks.outputs.benchmark_result}}
+            ${{steps.result.outputs.benchmark_result}}
