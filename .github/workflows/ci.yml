@@ -255,9 +255,9 @@ jobs:
 
             **🚀 Jmh Benchmark:**
 
-            ${{steps.result.outputs.benchmark_result_CookieDecodeBenchmark}}
-            ${{steps.result.outputs.benchmark_result_HttpCollectEval}}
-            ${{steps.result.outputs.benchmark_result_HttpCombineEval}}
-            ${{steps.result.outputs.benchmark_result_HttpNestedFlatMapEval}}
-            ${{steps.result.outputs.benchmark_result_HttpRouteTextPerf}}
-            ${{steps.result.outputs.benchmark_result_ProbeContentTypeBenchmark}}
+            ${{steps.result_CookieDecodeBenchmark.outputs.benchmark_result_CookieDecodeBenchmark}}
+            ${{steps.result_HttpCollectEval.outputs.benchmark_result_HttpCollectEval}}
+            ${{steps.result_HttpCombineEval.outputs.benchmark_result_HttpCombineEval}}
+            ${{steps.result_HttpNestedFlatMapEval.outputs.benchmark_result_HttpNestedFlatMapEval}}
+            ${{steps.result_HttpRouteTextPerf.outputs.benchmark_result_HttpRouteTextPerf}}
+            ${{steps.result_ProbeContentTypeBenchmark.outputs.benchmark_result_ProbeContentTypeBenchmark}}

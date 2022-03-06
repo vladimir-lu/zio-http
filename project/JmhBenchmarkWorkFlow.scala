@@ -32,7 +32,7 @@ object JmhBenchmarkWorkFlow {
   })
 
   def result: String = sortedlist.map(str => {
-    s"""$${{steps.result.outputs.benchmark_result_${str}}}"""
+    s"""$${{steps.result_${str}.outputs.benchmark_result_${str}}}"""
   }).mkString("\n|")
 
 
