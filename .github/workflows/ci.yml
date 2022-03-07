@@ -43,8 +43,8 @@ jobs:
           sbt -no-colors -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCollectEval" | tee HttpCollectEval
           HttpCollectEval=$(echo $(grep "thrpt" HttpCollectEval))
           echo "$HttpCollectEval"
-          IFS='\n' read -ra PARSED_RESULT <<< "$HttpCollectEval"
-          echo ::set-output name=benchmark_HttpCollectEval::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
+          IFS='$' read -ra PARSED_RESULT <<< "$HttpCollectEval"
+          echo ::set-output name=benchmark_HttpCollectEval::$(echo ${PARSED_RESULT[0]}": "${PARSED_RESULT[1]})
 
 
       - uses: peter-evans/commit-comment@v1
