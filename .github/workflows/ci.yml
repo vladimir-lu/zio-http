@@ -62,5 +62,5 @@ jobs:
 
             - Current Branch:
            
-            ${{steps.current_HttpCollectEval.body}
+            ${{steps.current_HttpCollectEval.body}}
            
