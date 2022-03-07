@@ -47,8 +47,10 @@ jobs:
           while IFS= read -r line; do
                 echo "Text read from file: $line"
                 IFS=' ' read -ra PARSED_RESULT <<< "$line"
-                echo ::set-output name=benchmark_HttpCollectEval_${PARSED_RESULT[1]}::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
+                echo ::set-output name=benchmark_HttpCollectEval_${PARSED_RESULT[1]}::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]}) | tee test2
           done < test
+          body=$(cat test2)
+          echo ::set-output name=body::$body
 
 
       - uses: peter-evans/commit-comment@v1
@@ -60,5 +62,5 @@ jobs:
 
             - Current Branch:
            
-            ${{steps.current_HttpCollectEval.outputs.*}}
+            ${{steps.current_HttpCollectEval.body}
            
