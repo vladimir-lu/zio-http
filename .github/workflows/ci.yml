@@ -58,5 +58,5 @@ jobs:
 
             - Current Branch:
            
-            ${{steps.current_HttpCollectEval.outputs.benchmark_HttpCollectEval_${PARSED_RESULT[1]}}}
+            ${{steps.current_HttpCollectEval.outputs}}
            
