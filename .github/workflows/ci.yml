@@ -40,13 +40,13 @@ jobs:
           cd zio-http
           sed -i -e '$aaddSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")' project/plugins.sbt
           sbt -no-colors -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCollectEval" | tee HttpCollectEval
-          HttpCollectEval=$(echo $(grep "thrpt" HttpCollectEval))
-          echo "$HttpCollectEval"
+          grep "thrpt" HttpCollectEval | tee test
+          echo "$test"
           while IFS= read -r line; do
                 echo "Text read from file: $line"
                 IFS=' ' read -ra PARSED_RESULT <<< "$line"
                 echo ::set-output name=benchmark_HttpCollectEval_${PARSED_RESULT[1]}::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
-                done < HttpCollectEval 
+                done < test 
 
 
       - uses: peter-evans/commit-comment@v1
