@@ -42,8 +42,11 @@ jobs:
           sbt -no-colors -v "zhttpBenchmarks/jmh:run -i 3 -wi 3 -f1 -t1 HttpCollectEval" | tee HttpCollectEval
           HttpCollectEval=$(echo $(grep "thrpt" HttpCollectEval))
           echo "$HttpCollectEval"
-          IFS=' ' read -ra PARSED_RESULT <<< "$HttpCollectEval"
-          echo ::set-output name=benchmark_HttpCollectEval::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
+           while IFS= read -r line; do
+                echo "Text read from file: $line"
+                IFS=' ' read -ra PARSED_RESULT <<< "$line"
+                echo ::set-output name=benchmark_HttpCollectEval_${PARSED_RESULT[1]}::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
+                done < HttpCollectEval 
 
 
       - uses: peter-evans/commit-comment@v1
@@ -55,5 +58,5 @@ jobs:
 
             - Current Branch:
            
-            ${{steps.current_HttpCollectEval.outputs.benchmark_HttpCollectEval}}
+            ${{steps.current_HttpCollectEval.outputs}}
            
