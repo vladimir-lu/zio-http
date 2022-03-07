@@ -46,7 +46,8 @@ jobs:
                 echo "Text read from file: $line"
                 IFS=' ' read -ra PARSED_RESULT <<< "$line"
                 echo ::set-output name=benchmark_HttpCollectEval_${PARSED_RESULT[1]}::$(echo ${PARSED_RESULT[1]}": "${PARSED_RESULT[4]})
-                done < "$test" 
+          done < test
+          echo "${{benchmark_HttpCollectEval_${PARSED_RESULT[1]}}}"
 
 
       - uses: peter-evans/commit-comment@v1
